@@ -1,0 +1,4 @@
+1: open cmd in folder and write command: cloudflared tunnel --url http://localhost:8000
+2: it will give you link similar to https://random-words-here.trycloudflare.com 
+3: replace "https" with "wss", and add "/ws" at the end
+4: link will look like this and use this in ip address textfield: wss://random-words-here.trycloudflare.com/ws
