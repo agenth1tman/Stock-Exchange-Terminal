@@ -76,6 +76,17 @@ Admin Username is "admin" and initial password is "7fedfb67".
 
 Distributed under the **GNU GPL v3**. See `LICENSE` for more details. This tool includes a limitation of liability clause, making it open for educational reuse and adaptation by other school fintech clubs, but it remains open-source in the process.
 
-```
+---
 
-```
+## 📺 Preview
+<img width="1878" height="964" alt="image_2026-07-03_033819966" src="https://github.com/user-attachments/assets/7ec9ccf9-11a2-4211-baa2-c8b7a3d77695" />
+
+**Login Page**
+
+<img width="1878" height="964" alt="Opera Snapshot_2026-07-03_032200_isl-stock-exchange" src="https://github.com/user-attachments/assets/c616cd07-2ea9-4042-b789-090f687ef59d" />
+
+**Team Panel - Dashboard**
+
+<img width="1878" height="964" alt="image" src="https://github.com/user-attachments/assets/75a8ebb3-ab3c-4159-8324-23744826c682" />
+
+**Admin Console - Overview**
