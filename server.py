@@ -82,6 +82,15 @@ class ConnectionManager:
         state = await get_full_state()
         for connection in self.active_connections:
             await connection.send_json(state)
+    
+    # Send live trade alerts explicitly to connected screens
+    async def broadcast_log(self, text: str, log_type: str):
+        msg = {"type": "log", "text": text, "logType": log_type}
+        for connection in self.active_connections:
+            try:
+                await connection.send_json(msg)
+            except:
+                pass
 
 manager = ConnectionManager()
 
@@ -188,21 +197,24 @@ async def process_action(payload: dict):
             qty = int(payload.get("quantity", 0))
             
             async with db.execute("SELECT value FROM system WHERE key = 'marketOpen'") as cursor:
-                # Force lowercase check so 'True', 'TRUE', and '1' all work
                 val = str((await cursor.fetchone())[0]).lower()
                 if val not in ["true", "1", "yes"]: 
                     return "MARKET IS CURRENTLY CLOSED."
             
-            async with db.execute("SELECT price FROM companies WHERE id = ?", (cid,)) as cursor:
+            # Lookup price and company name simultaneously
+            async with db.execute("SELECT price, name FROM companies WHERE id = ?", (cid,)) as cursor:
                 c_row = await cursor.fetchone()
                 if not c_row: 
                     return "COMPANY NOT FOUND."
                 cost = c_row[0] * qty
+                c_name = c_row[1]
                 
-            async with db.execute("SELECT cash FROM teams WHERE username = ?", (username,)) as cursor:
+            # Lookup cash and team name simultaneously
+            async with db.execute("SELECT cash, teamName FROM teams WHERE username = ?", (username,)) as cursor:
                 t_row = await cursor.fetchone()
                 if not t_row or t_row[0] < cost: 
                     return "INSUFFICIENT FUNDS."
+                t_name = t_row[1]
                     
             await db.execute("UPDATE teams SET cash = cash - ? WHERE username = ?", (cost, username))
             await db.execute("""
@@ -212,6 +224,9 @@ async def process_action(payload: dict):
                 DO UPDATE SET quantity = quantity + ?
             """, (username, cid, qty, qty))
             await db.commit()
+            
+            # Broadcast the live action
+            await manager.broadcast_log(f"{t_name} bought {qty} shares of {c_name}", "trade-up")
 
         elif action == "sell" and payload.get("username"):
             username = payload.get("username")
@@ -219,24 +234,32 @@ async def process_action(payload: dict):
             qty = int(payload.get("quantity", 0))
             
             async with db.execute("SELECT value FROM system WHERE key = 'marketOpen'") as cursor:
-                if (await cursor.fetchone())[0] != "true": 
+                val = str((await cursor.fetchone())[0]).lower()
+                if val not in ["true", "1", "yes"]: 
                     return "MARKET IS CURRENTLY CLOSED."
                 
-            async with db.execute("SELECT price FROM companies WHERE id = ?", (cid,)) as cursor:
+            async with db.execute("SELECT price, name FROM companies WHERE id = ?", (cid,)) as cursor:
                 c_row = await cursor.fetchone()
                 if not c_row: 
                     return "COMPANY NOT FOUND."
                 proceeds = c_row[0] * qty
+                c_name = c_row[1]
                 
             async with db.execute("SELECT quantity FROM holdings WHERE username = ? AND company_id = ?", (username, cid)) as cursor:
                 h_row = await cursor.fetchone()
                 if not h_row or h_row[0] < qty: 
                     return "NOT ENOUGH SHARES OWNED."
                 
+            async with db.execute("SELECT teamName FROM teams WHERE username = ?", (username,)) as cursor:
+                t_name = (await cursor.fetchone())[0]
+                
             await db.execute("UPDATE teams SET cash = cash + ? WHERE username = ?", (proceeds, username))
             await db.execute("UPDATE holdings SET quantity = quantity - ? WHERE username = ? AND company_id = ?", (qty, username, cid))
             await db.execute("DELETE FROM holdings WHERE quantity <= 0")
             await db.commit()
+            
+            # Broadcast the live action
+            await manager.broadcast_log(f"{t_name} sold {qty} shares of {c_name}", "trade-down")
             
     # Return None if the action was successful
     return None

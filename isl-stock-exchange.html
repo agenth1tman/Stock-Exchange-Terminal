@@ -153,9 +153,9 @@ body {
 .tp-live-badge { border: 1px solid rgba(76, 175, 125, 0.3); color: #4caf7d; cursor: default; }
 
 .tp-ticker-wrap { width: 100%; overflow: hidden; background: rgba(8,8,8,0.8); border-bottom: 1px solid rgba(240,192,0,0.1); padding: 8px 0; display: flex; }
-.tp-ticker-track { display: flex; width: max-content; animation: ticker-scroll 35s linear infinite; }
+.tp-ticker-track { display: flex; width: max-content; animation: ticker-scroll 120s linear infinite; }
 @keyframes ticker-scroll { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-50%, 0, 0); } }
-.tp-ticker-item { display: flex; align-items: center; gap: 8px; padding: 0 32px; font-family: 'JetBrains Mono', monospace; }
+.tp-ticker-item { display: flex; align-items: center; gap: 8px; padding: 0 32px; font-family: 'JetBrains Mono', monospace; flex-shrink: 0; }
 /* --- AGGRESSIVE MARKET STATE ANIMATIONS --- */
 .market-banner-container {
   position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
@@ -200,6 +200,110 @@ body {
 }
 .shackle-open { animation: lock-open 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; animation-delay: 0.8s; }
 .shackle-close { animation: lock-close 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; animation-delay: 0.8s; }
+
+/* --- ADMIN PANEL FIGMA ANIMATIONS --- */
+@keyframes ring-rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+.ring-rotate { animation: ring-rotate 8s linear infinite; transform-origin: center; }
+.ring-rotate-rev { animation: ring-rotate 12s linear infinite reverse; transform-origin: center; }
+
+@keyframes pulse-ring { 0% { transform: scale(0.88); opacity: 0.7; } 100% { transform: scale(1.5); opacity: 0; } }
+.pulse-ring { animation: pulse-ring 2s ease-out infinite; transform-origin: center; }
+
+@keyframes red-breathe {
+  0%, 100% { box-shadow: 0 0 12px 2px rgba(204,34,51,0.15), inset 0 0 30px rgba(204,34,51,0.05); }
+  50% { box-shadow: 0 0 32px 8px rgba(204,34,51,0.35), inset 0 0 60px rgba(204,34,51,0.1); }
+}
+.red-breathe { animation: red-breathe 2.4s ease-in-out infinite; }
+
+@keyframes gold-glow {
+  0%, 100% { box-shadow: 0 0 16px 3px rgba(240,192,0,0.12), inset 0 0 40px rgba(240,192,0,0.04); }
+  50% { box-shadow: 0 0 36px 8px rgba(240,192,0,0.25), inset 0 0 60px rgba(240,192,0,0.08); }
+}
+.gold-glow { animation: gold-glow 3s ease-in-out infinite; }
+
+@keyframes radar { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+.radar-sweep { animation: radar 3s linear infinite; transform-origin: center; }
+
+.market-btn { cursor: pointer; transition: transform 0.15s ease; border: none; outline: none; }
+.market-btn:active { transform: scale(0.96) !important; }
+
+/* Custom Admin Scrollbar */
+.admin-scroll::-webkit-scrollbar { width: 4px; }
+.admin-scroll::-webkit-scrollbar-track { background: transparent; }
+.admin-scroll::-webkit-scrollbar-thumb { background: rgba(240,192,0,0.2); border-radius: 4px; }/* --- ADMIN PANEL FIGMA ANIMATIONS --- */
+@keyframes ring-rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+.ring-rotate { animation: ring-rotate 8s linear infinite; transform-origin: center; }
+.ring-rotate-rev { animation: ring-rotate 12s linear infinite reverse; transform-origin: center; }
+
+@keyframes pulse-ring { 0% { transform: scale(0.88); opacity: 0.7; } 100% { transform: scale(1.5); opacity: 0; } }
+.pulse-ring { animation: pulse-ring 2s ease-out infinite; transform-origin: center; }
+
+@keyframes red-breathe {
+  0%, 100% { box-shadow: 0 0 12px 2px rgba(204,34,51,0.15), inset 0 0 30px rgba(204,34,51,0.05); }
+  50% { box-shadow: 0 0 32px 8px rgba(204,34,51,0.35), inset 0 0 60px rgba(204,34,51,0.1); }
+}
+.red-breathe { animation: red-breathe 2.4s ease-in-out infinite; }
+
+@keyframes gold-glow {
+  0%, 100% { box-shadow: 0 0 16px 3px rgba(240,192,0,0.12), inset 0 0 40px rgba(240,192,0,0.04); }
+  50% { box-shadow: 0 0 36px 8px rgba(240,192,0,0.25), inset 0 0 60px rgba(240,192,0,0.08); }
+}
+.gold-glow { animation: gold-glow 3s ease-in-out infinite; }
+
+@keyframes radar { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+.radar-sweep { animation: radar 3s linear infinite; transform-origin: center; }
+
+.market-btn { cursor: pointer; transition: transform 0.15s ease; border: none; outline: none; }
+.market-btn:active { transform: scale(0.96) !important; }
+
+/* Custom Admin Scrollbar */
+.admin-scroll::-webkit-scrollbar { width: 4px; }
+.admin-scroll::-webkit-scrollbar-track { background: transparent; }
+.admin-scroll::-webkit-scrollbar-thumb { background: rgba(240,192,0,0.2); border-radius: 4px; }
+
+/* --- ADMIN BUTTON HOVER STATES --- */
+.admin-btn-blue { background: rgba(26,58,143,0.1); border: 1px solid #1a3a8f; color: #7aaaff; font-size: 10px; font-weight: bold; letter-spacing: 0.15em; text-transform: uppercase; padding: 12px; cursor: pointer; transition: all 0.15s; }
+.admin-btn-blue:hover { background: rgba(26,58,143,0.3); }
+
+.admin-btn-red { background: transparent; border: 1px solid rgba(240,192,0,0.1); color: #444455; font-size: 10px; font-weight: bold; letter-spacing: 0.15em; text-transform: uppercase; padding: 12px; cursor: pointer; transition: all 0.2s; }
+.admin-btn-red:hover { border-color: rgba(204,34,51,0.4); color: #cc2233; }
+
+.admin-btn-gold { background: #f0c000; color: black; font-size: 10px; font-weight: 900; letter-spacing: 0.2em; text-transform: uppercase; padding: 10px 20px; border: none; cursor: pointer; transition: all 0.15s; }
+.admin-btn-gold:hover { background: #ffd700; }
+
+.admin-btn-apply { font-size: 10px; font-weight: bold; letter-spacing: 0.2em; color: #f0c000; background: transparent; border: 1px solid rgba(240,192,0,0.3); padding: 6px 10px; cursor: pointer; transition: all 0.15s; }
+.admin-btn-apply:hover { background: #f0c000; color: black; border-color: #f0c000; }
+
+.admin-btn-remove { font-size: 10px; font-weight: bold; letter-spacing: 0.2em; color: #cc2233; background: transparent; border: 1px solid rgba(204,34,51,0.3); padding: 6px 10px; cursor: pointer; transition: all 0.15s; }
+.admin-btn-remove:hover { background: #cc2233; color: white; border-color: #cc2233; }
+
+.admin-btn-addcash { background: transparent; border: 1px solid rgba(76,175,125,0.5); color: #4caf7d; font-size: 10px; font-weight: 900; letter-spacing: 0.2em; text-transform: uppercase; padding: 10px; cursor: pointer; transition: all 0.15s; }
+.admin-btn-addcash:hover { background: #4caf7d; color: black; border-color: #4caf7d; }
+
+.admin-btn-subcash { background: transparent; border: 1px solid rgba(204,34,51,0.5); color: #cc2233; font-size: 10px; font-weight: 900; letter-spacing: 0.2em; text-transform: uppercase; padding: 10px; cursor: pointer; transition: all 0.15s; }
+.admin-btn-subcash:hover { background: #cc2233; color: white; border-color: #cc2233; }
+
+.market-btn:hover { transform: scale(1.03); }
+
+/* --- EYE ICON STATES --- */
+.tx-eye-btn { color: #555566 !important; transition: color 0.1s ease; }
+.tx-eye-btn:hover { color: #aaaaaa !important; }
+.tx-eye-btn.is-visible { color: #f0c000 !important; }
+.tx-eye-btn.is-visible:hover { color: #ffd700 !important; }
+
+/* --- EASTER EGG MODAL --- */
+.ee-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(8,8,8,0.85); backdrop-filter: blur(8px); z-index: 999999; display: flex; align-items: center; justify-content: center; animation: ee-fade-in 0.3s ease-out forwards; }
+.ee-modal { width: 440px; background: #080808; border: 1px solid rgba(240,192,0,0.3); box-shadow: 0 0 60px rgba(240,192,0,0.1); padding: 2px; position: relative; overflow: hidden; transform: scale(0.95); animation: ee-pop 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.ee-inner { background: #0e0e0e; padding: 40px; display: flex; flex-direction: column; align-items: center; text-align: center; border: 1px solid rgba(240,192,0,0.1); }
+.ee-title { font-size: 14px; font-weight: 900; letter-spacing: 0.4em; color: #f0c000; text-transform: uppercase; margin-bottom: 32px; display: flex; align-items: center; gap: 12px; width: 100%; justify-content: center; }
+.ee-line { width: 40px; height: 1px; background: rgba(240,192,0,0.5); }
+.ee-name { font-size: 20px; font-weight: 900; color: #f5f0e8; letter-spacing: 0.05em; margin-bottom: 6px; }
+.ee-role { font-size: 10px; color: #8899bb; letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 24px; line-height: 1.6; }
+.ee-subtext { color: #555566; font-size: 9px; }
+.ee-btn { margin-top: 16px; width: 100%; background: transparent; border: 1px solid #f0c000; color: #f0c000; font-size: 11px; font-weight: 900; letter-spacing: 0.3em; text-transform: uppercase; padding: 14px; cursor: pointer; transition: all 0.2s; font-family: inherit; }
+.ee-btn:hover { background: #f0c000; color: black; box-shadow: 0 0 20px rgba(240,192,0,0.4); }
+@keyframes ee-fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes ee-pop { to { transform: scale(1); } }
 </style>
 </head>
 <body>
@@ -233,7 +337,7 @@ body {
             <div style="width: 24px; height: 24px; background: var(--gold); display: flex; align-items: center; justify-content: center; color: black; font-size: 10px; font-weight: 900;">ISL</div>
             <span style="font-size: 11px; color: var(--text-muted); letter-spacing: 0.3em; text-transform: uppercase;">Markhor Stock Exchange Terminal</span>
           </div>
-          <span style="font-size: 10px; color: #222233; letter-spacing: 0.2em;">SYS 4.1.0</span>
+          <div data-action="easter-egg" style="font-size: 10px; color: #555566; letter-spacing: 0.3em; cursor: pointer; transition: color 0.2s;" onmouseover="this.style.color='#f0c000'" onmouseout="this.style.color='#555566'">SYS 4.1.0</div>
         </header>
 
         <!-- Floating Connection Panel -->
@@ -273,7 +377,9 @@ body {
           <div style="margin-bottom: 24px; position: relative;">
             <label class="tx-label">Password</label>
             <input id="login-password" class="tx-input" type="password" placeholder="••••••••••••" style="padding-right: 40px;" />
-            <button type="button" data-action="toggle-password" data-target="login-password" style="position: absolute; right: 12px; top: 32px; background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 16px;">&#128065;</button>
+            <button type="button" class="tx-eye-btn" data-action="toggle-password" data-target="login-password" style="position: absolute; right: 12px; top: 32px; background: none; border: none; color: #555566; cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; z-index: 10;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            </button>
           </div>
 
           <button class="btn-gold" data-action="login">Access Terminal</button>
@@ -395,7 +501,7 @@ body {
     local.flash = text; 
     local.flashOk = ok !== false; 
     render();
-    setTimeout(function () { local.flash = null; render(); }, 500);
+    setTimeout(function () { local.flash = null; render(); }, 1200);
   }
 
   function triggerMarketAnimation(isOpen) {
@@ -526,9 +632,17 @@ body {
     ws.onmessage = function (event) {
       var msg = JSON.parse(event.data);
       
+      // NEW: Catch live trade alerts from Python and feed them to the Admin log
+      if (msg.type === "log") {
+        if (typeof addAdminLog === "function" && role === "admin") {
+            addAdminLog(msg.text, msg.logType);
+        }
+        return; // Halt here so we don't trigger a full UI redraw
+      }
+
       if (msg.type === "state") {
         gameState = msg.state;
-      } 
+      }
       else if (msg.teams !== undefined || msg.companies !== undefined) {
         gameState = msg;
       }
@@ -548,14 +662,15 @@ body {
         return; // Halt execution so it doesn't crash the renderer
       }
 
-      /// Render the valid state
+      // Render the valid state
       if (gameState) {
         // --- ANIMATION TRIGGER LOGIC ---
-        // If this is NOT the first load, and the state changed, fire the popup
         if (lastMarketState !== null && lastMarketState !== gameState.marketOpen) {
-            triggerMarketAnimation(gameState.marketOpen);
+            // ONLY fire the sliding lock animation on the Team Dashboard
+            if (role === "team") {
+                triggerMarketAnimation(gameState.marketOpen);
+            }
         }
-        // Save the current state for the next check
         lastMarketState = gameState.marketOpen;
 
         var flashEl = document.getElementById("login-flash");
@@ -675,68 +790,6 @@ body {
     return '<div class="table-wrap"><div style="padding:12px 16px;border-bottom:1px solid var(--border);font-weight:600;font-size:14px;">&#127942; Leaderboard</div>' + body + '</div>';
   }
 
-  function adminHTML() {
-    var s = gameState;
-    var tab = local.adminTab;
-    var tabs = [["overview","Overview"],["companies","Companies"],["teams","Teams"],["leaderboard","Leaderboard"],["settings","Settings"]];
-    var tabsHTML = '<div class="tabs">' + tabs.map(function (t) { return '<button class="tab ' + (tab === t[0] ? "active" : "") + '" data-action="set-admin-tab" data-tab="' + t[0] + '">' + t[1] + '</button>'; }).join("") + '</div>';
-    var header = '<div class="row"><div style="display:flex;align-items:center;gap:8px;"><h1 style="font-size:18px;">&#128737;&#65039; Admin Console</h1><span class="pill ' + (s.marketOpen ? "pill-open" : "pill-closed") + '">Market ' + (s.marketOpen ? "Open" : "Closed") + ' &middot; Round ' + s.round + '</span></div><button class="link-btn" style="color:var(--muted);" data-action="logout">Log out</button></div>';
-
-    var body = "";
-    if (tab === "overview") {
-      body = '<div class="stat-grid">' + statCard("Teams", s.teams.length) + statCard("Companies", s.companies.length) + statCard("Round", s.round) + '</div><div class="card btn-group" style="margin-bottom:12px;"><button class="btn ' + (s.marketOpen ? "btn-ghost-red" : "btn-ghost") + '" data-action="toggle-market">' + (s.marketOpen ? "&#10074;&#10074; Close market" : "&#9654; Open market") + '</button><button class="btn btn-ghost" data-action="next-round">Advance to round ' + (s.round + 1) + '</button><button class="btn btn-ghost-red" data-action="reset-game">&#8634; Reset game</button></div>';
-    } else if (tab === "companies") {
-      body = '<div class="table-wrap"><table><thead><tr><th>Company</th><th>Industry</th><th class="text-right">Price</th><th class="text-right">Price modifier (+/-)</th><th></th></tr></thead><tbody>' +
-        s.companies.map(function (c) {
-          var change = c.price - c.prevPrice;
-          var cls = change > 0 ? "up" : change < 0 ? "down" : "";
-          return '<tr><td style="font-weight:600;">' + esc(c.name) + '</td><td style="color:var(--muted);">' + esc(c.industry) + '</td><td class="text-right mono ' + cls + '">$' + fmt(c.price) + '</td><td class="text-right"><input id="price-edit-' + c.id + '" type="number" placeholder="e.g. 20 or -10" style="width:130px;margin:0;text-align:right;" class="mono" /></td><td class="text-right" style="white-space:nowrap;"><button class="link-btn gold-link" data-action="apply-price" data-id="' + c.id + '">Apply</button><button class="link-btn red-link" data-action="delete-company" data-id="' + c.id + '">Remove</button></td></tr>';
-        }).join("") + '</tbody></table></div>' +
-        '<div class="add-form"><h3>&#127970; Add company</h3><div class="add-grid"><input id="new-company-name" placeholder="Name" style="margin:0;" /><input id="new-company-industry" placeholder="Industry" style="margin:0;" /><input id="new-company-price" type="number" placeholder="Initial price" style="margin:0;" /><button class="btn btn-gold" data-action="add-company">+ Add</button></div></div>';
-    } else if (tab === "teams") {
-      body = '<div class="table-wrap"><table><thead><tr><th>Team</th><th>Username</th><th class="text-right">Total Equity</th><th></th></tr></thead><tbody>' +
-        (s.teams.length === 0 ? '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:24px;">No teams yet.</td></tr>' : s.teams.map(function (t) { return '<tr><td style="font-weight:600;">' + esc(t.teamName) + '</td><td style="color:var(--muted);">' + esc(t.username) + '</td><td class="text-right mono">$' + fmt(totalEquity(t, s.companies)) + '</td><td class="text-right"><button class="link-btn red-link" style="margin-left:0;" data-action="delete-team" data-id="' + esc(t.username) + '">Remove</button></td></tr>'; }).join("")) +
-        '</tbody></table></div><div class="add-form"><h3>Add team account</h3><div class="add-grid"><input id="new-team-name" placeholder="Team name" style="margin:0;" /><input id="new-team-username" placeholder="Username" style="margin:0;" /><input id="new-team-password" placeholder="Password" style="margin:0;" /><button class="btn btn-gold" data-action="add-team">+ Add team</button></div></div>';
-    } else if (tab === "leaderboard") { body = leaderboardHTML(null); 
-    } else if (tab === "settings") {
-      // 1. Password Change Card
-      var pwForm = '<div class="card">' +
-        '<h3 style="font-size:14px;margin:0 0 12px;">&#128273; Change Admin Password</h3>' +
-        '<div style="position:relative; margin-bottom:10px;">' +
-          '<input id="pw-current" type="password" placeholder="Current password" style="margin-bottom:0; padding-right:40px;" />' +
-          '<button type="button" data-action="toggle-password" data-target="pw-current" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--muted); cursor:pointer; font-size:16px; padding:0;">&#128065;</button>' +
-        '</div>' +
-        '<div style="position:relative; margin-bottom:10px;">' +
-          '<input id="pw-new" type="password" placeholder="New password" style="margin-bottom:0; padding-right:40px;" />' +
-          '<button type="button" data-action="toggle-password" data-target="pw-new" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--muted); cursor:pointer; font-size:16px; padding:0;">&#128065;</button>' +
-        '</div>' +
-        '<div style="position:relative; margin-bottom:10px;">' +
-          '<input id="pw-confirm" type="password" placeholder="Confirm new password" style="margin-bottom:0; padding-right:40px;" />' +
-          '<button type="button" data-action="toggle-password" data-target="pw-confirm" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--muted); cursor:pointer; font-size:16px; padding:0;">&#128065;</button>' +
-        '</div>' +
-        '<button class="btn btn-gold" data-action="change-admin-password">Update Password</button>' +
-        (local.flash ? '<div class="flash ' + (local.flashOk ? "up" : "down") + '">' + esc(local.flash) + '</div>' : '') +
-      '</div>';
-
-      // 2. Cash Injection Card
-      var teamOptions = s.teams.map(function(t) { return '<option value="' + esc(t.username) + '">' + esc(t.teamName) + ' (' + esc(t.username) + ')</option>'; }).join("");
-      var cashForm = '<div class="card">' +
-        '<h3 style="font-size:14px;margin:0 0 12px;">&#128181; Adjust Team Cash</h3>' +
-        (s.teams.length === 0 ? '<div class="small-muted">No teams available.</div>' :
-        '<select id="adjust-cash-team" style="margin-bottom:10px;">' + teamOptions + '</select>' +
-        '<input id="adjust-cash-amount" type="number" placeholder="Amount (e.g. 50000)" style="margin-bottom:10px;" />' +
-        '<div class="btn-group">' +
-          '<button class="btn-dynamic" data-action="add-cash">Add Cash</button>' +
-          '<button class="btn btn-red-soft" data-action="remove-cash">Deduct Cash</button>' +
-        '</div>') +
-      '</div>';
-
-      body = '<div class="grid-2">' + pwForm + cashForm + '</div>';
-    }
-
-    return '<div class="wrap">' + header + tabsHTML + body + '</div>';
-  }
-
   function marketWatchHTML(team) {
     var s = gameState;
     var rows = s.companies.map(function(c) {
@@ -770,7 +823,7 @@ body {
       if (dashboardScreen) dashboardScreen.style.display = "none";
       if (adminScreen) {
         adminScreen.style.display = "block";
-        adminScreen.innerHTML = '<h1 style="color: white; text-align: center; padding-top: 100px;">ADMIN CONSOLE GRANTED<br><span style="font-size: 14px; color: var(--text-muted);">Under Construction</span></h1>';
+        buildAdminUI(adminScreen); // <-- Now uses the smart builder
       }
     } else if (role === "team") {
       if (loginScreen) loginScreen.style.display = "none";
@@ -787,18 +840,320 @@ body {
     }
   }
 
+  function buildAdminUI(container) {
+    var s = gameState;
+    var tab = local.adminTab || "overview";
+
+    if (!local.activityLog) {
+      local.activityLog = [{ id: 1, text: "Admin console initialized.", type: "reset", time: new Date().toLocaleTimeString("en-US", { hour12: false }) }];
+    }
+
+    if (!document.getElementById("admin-shell")) {
+      container.innerHTML = '<div id="admin-shell" style="position:relative; width:100%; height:100%; display:flex; flex-direction:column; overflow:hidden;">' +
+        '<div id="admin-bg" style="position:absolute; inset:0; pointer-events:none; z-index:0; opacity:0.3;">' +
+          '<svg style="width:100%; height:100%;" preserveAspectRatio="xMidYMid slice" viewBox="0 0 1440 900">' +
+            '<g opacity="0.1">' +
+              Array.from({length:23}).map(function(_,i){ return '<line x1="'+(i*64)+'" y1="0" x2="'+(i*64)+'" y2="900" stroke="#f0c000" stroke-width="0.5"/>'; }).join('') +
+              Array.from({length:15}).map(function(_,i){ return '<line x1="0" y1="'+(i*64)+'" x2="1440" y2="'+(i*64)+'" stroke="#f0c000" stroke-width="0.5"/>'; }).join('') +
+            '</g>' +
+            '<path d="M0,200 L1440,200" stroke="#1a3a8f" stroke-width="1.5" opacity="0.1" stroke-dasharray="4 4"/>' +
+          '</svg>' +
+        '</div>' +
+        '<div id="admin-header" style="position:relative; z-index:10; display:flex; justify-content:space-between; align-items:center; padding:16px 32px; border-bottom:1px solid rgba(240,192,0,0.1); flex-shrink:0;"></div>' +
+        '<div id="admin-ticker" class="tp-ticker-wrap" style="position:relative; z-index:10; flex-shrink:0;"></div>' +
+        '<div id="admin-tabs" style="position:relative; z-index:10; display:flex; gap:0; padding:0 32px; border-bottom:1px solid rgba(240,192,0,0.1); flex-shrink:0;"></div>' +
+        '<div id="admin-body" style="position:relative; z-index:10; flex:1; padding:24px 32px; display:flex; flex-direction:column; min-height:0; overflow-y:auto;"></div>' +
+      '</div>';
+    }
+
+    var tabs = [
+      ["overview","Overview"],
+      ["companies","Companies"],
+      ["teams","Teams"],
+      ["leaderboard","Leaderboard"],
+      ["settings","Settings"]
+    ];
+
+    document.getElementById("admin-header").innerHTML =
+      '<div style="display:flex; align-items:center; gap:12px;">' +
+        '<div style="width:24px; height:24px; background:var(--gold); display:flex; align-items:center; justify-content:center; color:black; font-size:10px; font-weight:900;">ISL</div>' +
+        '<span style="font-size:11px; color:#555566; letter-spacing:0.3em; text-transform:uppercase;">Markhor Stock Exchange Terminal</span>' +
+      '</div>' +
+      '<div style="display:flex; flex-direction:column; align-items:center; gap:4px; position:absolute; left:50%; transform:translateX(-50%);">' +
+        '<span style="font-size:18px; font-weight:900; letter-spacing:0.2em; color:var(--gold); text-transform:uppercase;">Admin Console</span>' +
+        '<div style="display:flex; align-items:center; gap:6px;">' +
+          '<span style="width:6px; height:6px; border-radius:50%; background:' + (s.marketOpen ? '#4caf7d' : '#cc2233') + ';"></span>' +
+          '<span style="font-size:9px; color:' + (s.marketOpen ? '#4caf7d' : '#cc2233') + '; letter-spacing:0.3em; text-transform:uppercase; font-weight:600;">Market ' + (s.marketOpen ? 'Open' : 'Closed') + ' &middot; Round ' + s.round + '</span>' +
+        '</div>' +
+      '</div>' +
+      '<div style="display:flex; align-items:center; gap:12px;">' +
+        '<div data-action="easter-egg" style="display:flex; align-items:center; gap:8px; border:1px solid rgba(76,175,125,0.3); padding:6px 16px; color:#4caf7d; font-size:10px; letter-spacing:0.25em; text-transform:uppercase; font-weight:600; cursor:pointer; transition:all 0.2s;" onmouseover="this.style.background=\'rgba(76,175,125,0.1)\'" onmouseout="this.style.background=\'transparent\'"><span style="width:6px; height:6px; border-radius:50%; background:#4caf7d;"></span> LIVE</div>' +
+        '<button data-action="logout" class="tp-header-btn">LOG OUT</button>' +
+      '</div>';
+
+    document.getElementById("admin-tabs").innerHTML = tabs.map(function(t) { 
+      var isActive = tab === t[0];
+      return '<button data-action="set-admin-tab" data-tab="' + t[0] + '" style="padding:12px 20px; font-size:10px; letter-spacing:0.3em; text-transform:uppercase; font-weight:600; cursor:pointer; background:none; border:none; border-bottom:2px solid ' + (isActive ? '#f0c000' : 'transparent') + '; color:' + (isActive ? '#f0c000' : '#555566') + '; transition:all 0.2s; margin-bottom:-1px; font-family:inherit;">' + t[1] + '</button>'; 
+    }).join("");
+
+    // Update Admin Ticker (Seamless DOM Update)
+    var adminTickerEl = document.getElementById("admin-ticker");
+    var currentPrices = JSON.stringify(s.companies.map(function(c){ return c.price; }));
+    
+    if (adminTickerEl && adminTickerEl.getAttribute("data-prices") !== currentPrices) {
+      var track = [];
+      for (var i = 0; i < 12; i++) track = track.concat(s.companies); 
+
+      var tickerItems = track.map(function(c) {
+        var change = c.price - c.prevPrice;
+        var pct = c.prevPrice ? (change / c.prevPrice) * 100 : 0;
+        var up = change >= 0;
+        return '<div class="tp-ticker-item">' +
+          '<span style="font-size:11px; font-weight:900; color:var(--gold);">' + esc(c.name) + '</span>' +
+          '<span style="font-size:11px; color:#aaaaaa;">$' + fmt(c.price) + '</span>' +
+          '<span style="font-size:10px; font-weight:600; color:' + (up ? '#4caf7d' : '#cc2233') + ';">' + (up ? '+' : '') + pct.toFixed(2) + '%</span>' +
+        '</div>';
+      }).join("");
+      
+      var existingTrack = adminTickerEl.querySelector(".tp-ticker-track");
+      if (existingTrack) {
+        existingTrack.innerHTML = tickerItems; // Updates text while keeping animation running
+      } else {
+        adminTickerEl.innerHTML = '<div class="tp-ticker-track">' + tickerItems + '</div>';
+      }
+      adminTickerEl.setAttribute("data-prices", currentPrices);
+    }
+
+    var bodyHTML = "";
+
+    if (tab === "overview") {
+      var marketLockSVG = s.marketOpen ? 
+        '<svg width="32" height="32" viewBox="0 0 32 32"><line x1="6" y1="6" x2="26" y2="26" stroke="#cc2233" stroke-width="2.5" stroke-linecap="round"/><line x1="26" y1="6" x2="6" y2="26" stroke="#cc2233" stroke-width="2.5" stroke-linecap="round"/></svg>' : 
+        '<svg width="32" height="32" viewBox="0 0 32 32"><polyline points="4,18 12,10 18,15 28,5" fill="none" stroke="#f0c000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><polyline points="22,5 28,5 28,11" fill="none" stroke="#f0c000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+      bodyHTML = '<div style="display:flex; flex-direction:column; gap:24px; height:100%;">' +
+        '<div style="display:flex; gap:12px; flex-shrink:0;">' +
+          '<div style="flex:1; border:1px solid rgba(240,192,0,0.12); background:#0e0e0e; padding:16px 20px;"><p style="font-size:9px; color:#555566; letter-spacing:0.3em; text-transform:uppercase; margin:0 0 8px 0;">Teams</p><p style="font-size:26px; font-weight:900; color:#f5f0e8; margin:0;">' + s.teams.length + '</p><p style="font-size:10px; color:#555566; margin:6px 0 0 0;">registered</p></div>' +
+          '<div style="flex:1; border:1px solid rgba(240,192,0,0.12); background:#0e0e0e; padding:16px 20px;"><p style="font-size:9px; color:#555566; letter-spacing:0.3em; text-transform:uppercase; margin:0 0 8px 0;">Companies</p><p style="font-size:26px; font-weight:900; color:#f5f0e8; margin:0;">' + s.companies.length + '</p><p style="font-size:10px; color:#555566; margin:6px 0 0 0;">listed</p></div>' +
+          '<div style="flex:1; border:1px solid rgba(240,192,0,0.12); background:#0e0e0e; padding:16px 20px;"><p style="font-size:9px; color:#555566; letter-spacing:0.3em; text-transform:uppercase; margin:0 0 8px 0;">Round</p><p style="font-size:26px; font-weight:900; color:#f5f0e8; margin:0;">' + s.round + '</p><p style="font-size:10px; color:#555566; margin:6px 0 0 0;">' + (s.marketOpen ? 'market open' : 'market closed') + '</p></div>' +
+        '</div>' +
+
+        '<div style="display:flex; gap:20px; flex:1; align-items:stretch; min-height:0;">' +
+          '<div style="display:flex; flex-direction:column; gap:20px; align-items:center; width:340px; flex-shrink:0;">' +
+            '<div style="position:relative; display:flex; align-items:center; justify-content:center; width:280px; height:280px;">' +
+              '<svg style="position:absolute; inset:0; overflow:visible;" width="280" height="280" viewBox="0 0 280 280">' +
+                '<circle cx="140" cy="140" r="136" fill="none" stroke="rgba(240,192,0,0.06)" stroke-width="1"/>' +
+                (s.marketOpen ? 
+                  '<g class="ring-rotate-rev"><circle cx="140" cy="140" r="128" fill="none" stroke="#cc2233" stroke-width="1" stroke-opacity="0.3" stroke-dasharray="4 16" stroke-linecap="round"/></g>' : 
+                  '<g class="ring-rotate"><circle cx="140" cy="140" r="128" fill="none" stroke="#f0c000" stroke-width="1" stroke-opacity="0.25" stroke-dasharray="6 14" stroke-linecap="round"/></g>' +
+                  '<g class="radar-sweep"><defs><radialGradient id="radarGrad" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#f0c000" stop-opacity="0.18"/><stop offset="100%" stop-color="#f0c000" stop-opacity="0"/></radialGradient></defs><path d="M140,140 L140,40 A100,100 0 0,1 213,93 Z" fill="url(#radarGrad)"/><line x1="140" y1="140" x2="140" y2="42" stroke="#f0c000" stroke-width="1" stroke-opacity="0.5"/></g>' +
+                  '<circle cx="140" cy="140" r="108" fill="none" stroke="#f0c000" stroke-width="1.5" stroke-opacity="0" class="pulse-ring"/>'
+                ) +
+                Array.from({length:24}).map(function(_,i){ var a=(i/24)*2*Math.PI-Math.PI/2; var r1=108, r2=i%6===0?100:104; return '<line x1="'+(140+r1*Math.cos(a))+'" y1="'+(140+r1*Math.sin(a))+'" x2="'+(140+r2*Math.cos(a))+'" y2="'+(140+r2*Math.sin(a))+'" stroke="'+(s.marketOpen?'#cc2233':'#f0c000')+'" stroke-width="'+(i%6===0?'1.5':'0.75')+'" stroke-opacity="0.2"/>'; }).join('') +
+              '</svg>' +
+              '<button data-action="toggle-market" class="market-btn ' + (s.marketOpen ? 'red-breathe' : 'gold-glow') + '" style="position:relative; z-index:10; border-radius:50%; display:flex; flex-direction:column; align-items:center; justify-content:center; width:200px; height:200px; background:#0e0e0e; font-family:inherit;">' +
+                '<div style="display:flex; flex-direction:column; align-items:center; gap:8px;">' +
+                  marketLockSVG +
+                  '<span style="font-size:15px; font-weight:900; letter-spacing:0.2em; color:' + (s.marketOpen ? '#cc2233' : '#f0c000') + ';">' + (s.marketOpen ? 'CLOSE' : 'OPEN') + '</span>' +
+                  '<span style="font-size:9px; color:' + (s.marketOpen ? 'rgba(204,34,51,0.5)' : 'rgba(240,192,0,0.5)') + '; letter-spacing:0.4em;">MARKET</span>' +
+                  '<div style="display:flex; align-items:center; gap:6px; margin-top:4px;"><span style="width:6px; height:6px; border-radius:50%; background:' + (s.marketOpen ? '#4caf7d' : '#555566') + ';"></span><span style="font-size:8px; color:' + (s.marketOpen ? '#4caf7d' : '#555566') + '; letter-spacing:0.2em;">' + (s.marketOpen ? 'LIVE' : 'HALTED') + '</span></div>' +
+                '</div>' +
+              '</button>' +
+            '</div>' +
+            '<div style="display:flex; gap:12px; width:100%;">' +
+              '<button data-action="next-round" class="admin-btn-blue" style="flex:1; font-family:inherit;">ADVANCE<br>ROUND ' + (s.round + 1) + '</button>' +
+              '<button data-action="reset-game" class="admin-btn-red" style="flex:1; font-family:inherit;">RESET<br>GAME</button>' +
+            '</div>' +
+          '</div>' +
+
+          '<div style="flex:1; border:1px solid rgba(240,192,0,0.12); background:#0e0e0e; display:flex; flex-direction:column; min-height:0;">' +
+            '<div style="display:flex; align-items:center; gap:8px; padding:12px 20px; border-bottom:1px solid rgba(240,192,0,0.08); flex-shrink:0;">' +
+              '<div style="width:4px; height:16px; background:#f0c000;"></div>' +
+              '<span style="font-size:10px; color:#f0c000; letter-spacing:0.3em; text-transform:uppercase; font-weight:600;">Live Activity</span>' +
+              '<span style="margin-left:auto; font-size:9px; color:#333344; letter-spacing:0.2em;">' + local.activityLog.length + ' EVENTS</span>' +
+            '</div>' +
+            '<div class="admin-scroll" style="overflow-y:auto; flex:1;">' +
+              local.activityLog.map(function(log) {
+                var dotColor = log.type === 'market' ? '#f0c000' : (log.type === 'round' ? '#7aaaff' : (log.type === 'trade-up' ? '#4caf7d' : (log.type === 'trade-down' ? '#cc2233' : '#555566')));
+                return '<div style="display:flex; align-items:flex-start; gap:12px; padding:12px 20px; border-bottom:1px solid rgba(240,192,0,0.04);">' +
+                  '<span style="width:6px; height:6px; border-radius:50%; background:' + dotColor + '; margin-top:6px; flex-shrink:0;"></span>' +
+                  '<div style="flex:1;"><p style="font-size:11px; color:#c8c8cc; margin:0;">' + esc(log.text) + '</p></div>' +
+                  '<span style="font-size:9px; color:#333344; flex-shrink:0; margin-top:2px;">' + log.time + '</span>' +
+                '</div>';
+              }).join("") +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    } 
+    
+    else if (tab === "companies") {
+      var coRows = s.companies.map(function(c) {
+        var change = c.price - c.prevPrice;
+        var pct = c.prevPrice ? (change / c.prevPrice) * 100 : 0;
+        var isUp = change >= 0;
+        return '<tr style="border-bottom:1px solid rgba(240,192,0,0.04);">' +
+          '<td style="padding:14px 20px;"><p style="font-size:13px; font-weight:bold; color:#f5f0e8; margin:0;">' + esc(c.name) + '</p></td>' +
+          '<td style="padding:14px 20px;"><p style="font-size:11px; color:#555566; margin:0;">' + esc(c.industry) + '</p></td>' +
+          '<td style="padding:14px 20px; text-align:right;"><div style="display:flex; align-items:center; justify-content:flex-end; gap:8px;"><span style="font-size:13px; font-weight:600; color:#f0c000;">$' + fmt(c.price) + '</span><span style="font-size:10px; font-weight:600; color:' + (isUp ? '#4caf7d' : '#cc2233') + ';">' + (isUp ? '+' : '') + pct.toFixed(1) + '%</span></div></td>' +
+          '<td style="padding:14px 20px; text-align:right;"><input id="price-edit-' + c.id + '" type="text" placeholder="e.g. 20 or -20" style="background:#080808; border:1px solid rgba(240,192,0,0.12); color:#f5f0e8; font-size:12px; padding:10px; width:140px; text-align:right; font-family:inherit; outline:none;" /></td>' +
+          '<td style="padding:14px 20px; text-align:right;"><div style="display:flex; justify-content:flex-end; gap:12px;"><button data-action="apply-price" data-id="' + c.id + '" class="admin-btn-apply" style="font-family:inherit;">APPLY</button><button data-action="delete-company" data-id="' + c.id + '" class="admin-btn-remove" style="font-family:inherit;">REMOVE</button></div></td>' +
+        '</tr>';
+      }).join("");
+
+      bodyHTML = '<div style="display:flex; flex-direction:column; gap:16px;">' +
+        '<div style="border:1px solid rgba(240,192,0,0.12); background:#0e0e0e;">' +
+          '<div style="display:flex; align-items:center; gap:8px; padding:12px 20px; border-bottom:1px solid rgba(240,192,0,0.08);"><div style="width:4px; height:16px; background:#f0c000;"></div><span style="font-size:10px; color:#f0c000; letter-spacing:0.3em; text-transform:uppercase; font-weight:600;">Listed Companies</span></div>' +
+          '<table style="width:100%; border-collapse:collapse;"><thead><tr style="border-bottom:1px solid rgba(240,192,0,0.06);">' + 
+            ['Company','Industry','Price','Price Modifier (+/-)',''].map(function(h,i) { return '<th style="padding:10px 20px; font-size:9px; color:#555566; letter-spacing:0.3em; text-transform:uppercase; font-weight:600; text-align:' + (i<=1?'left':'right') + ';">' + h + '</th>'; }).join('') + 
+          '</tr></thead><tbody>' + coRows + '</tbody></table>' +
+        '</div>' +
+        
+        '<div style="border:1px solid rgba(240,192,0,0.12); background:#0e0e0e;">' +
+          '<div style="display:flex; align-items:center; gap:8px; padding:12px 20px; border-bottom:1px solid rgba(240,192,0,0.08);"><span style="font-size:14px; font-weight:bold; color:#f0c000;">+</span><span style="font-size:10px; color:#f0c000; letter-spacing:0.3em; text-transform:uppercase; font-weight:600;">Add Company</span></div>' +
+          '<div style="padding:20px; display:flex; gap:12px;">' +
+            '<input id="new-company-name" placeholder="Company name" style="flex:1; background:#080808; border:1px solid rgba(240,192,0,0.12); color:#f5f0e8; font-size:12px; padding:10px; font-family:inherit; outline:none;" />' +
+            '<input id="new-company-industry" placeholder="Industry" style="flex:1; background:#080808; border:1px solid rgba(240,192,0,0.12); color:#f5f0e8; font-size:12px; padding:10px; font-family:inherit; outline:none;" />' +
+            '<input id="new-company-price" type="number" placeholder="Initial price" style="width:140px; background:#080808; border:1px solid rgba(240,192,0,0.12); color:#f5f0e8; font-size:12px; padding:10px; font-family:inherit; outline:none;" />' +
+            '<button data-action="add-company" class="admin-btn-gold" style="font-family:inherit; flex-shrink:0;">+ ADD</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    }
+
+    else if (tab === "teams") {
+      var tmRows = s.teams.map(function(t) {
+        return '<tr style="border-bottom:1px solid rgba(240,192,0,0.04);">' +
+          '<td style="padding:14px 20px;"><p style="font-size:13px; font-weight:bold; color:#f5f0e8; margin:0;">' + esc(t.teamName) + '</p></td>' +
+          '<td style="padding:14px 20px;"><p style="font-size:12px; color:#555566; margin:0;">' + esc(t.username) + '</p></td>' +
+          '<td style="padding:14px 20px; text-align:right;"><span style="font-size:12px; color:#aaaaaa;">$' + fmt(t.cash) + '</span></td>' +
+          '<td style="padding:14px 20px; text-align:right;"><span style="font-size:12px; color:#aaaaaa;">$' + fmt(stockPortfolioValue(t, s.companies)) + '</span></td>' +
+          '<td style="padding:14px 20px; text-align:right;"><span style="font-size:13px; font-weight:bold; color:#f5f0e8;">$' + fmt(totalEquity(t, s.companies)) + '</span></td>' +
+          '<td style="padding:14px 20px; text-align:right;"><button data-action="delete-team" data-id="' + esc(t.username) + '" class="admin-btn-remove" style="font-family:inherit; float:right;">REMOVE</button></td>' +
+        '</tr>';
+      }).join("");
+
+      bodyHTML = '<div style="display:flex; flex-direction:column; gap:16px;">' +
+        '<div style="border:1px solid rgba(240,192,0,0.12); background:#0e0e0e;">' +
+          '<div style="display:flex; align-items:center; gap:8px; padding:12px 20px; border-bottom:1px solid rgba(240,192,0,0.08);"><div style="width:4px; height:16px; background:#f0c000;"></div><span style="font-size:10px; color:#f0c000; letter-spacing:0.3em; text-transform:uppercase; font-weight:600;">Registered Teams</span></div>' +
+          '<table style="width:100%; border-collapse:collapse;"><thead><tr style="border-bottom:1px solid rgba(240,192,0,0.06);">' + 
+            ['Team','Username','Cash','Portfolio','Total Equity',''].map(function(h,i) { return '<th style="padding:10px 20px; font-size:9px; color:#555566; letter-spacing:0.3em; text-transform:uppercase; font-weight:600; text-align:' + (i<=1?'left':'right') + ';">' + h + '</th>'; }).join('') + 
+          '</tr></thead><tbody>' + tmRows + '</tbody></table>' +
+        '</div>' +
+        
+        '<div style="border:1px solid rgba(240,192,0,0.12); background:#0e0e0e;">' +
+          '<div style="display:flex; align-items:center; gap:8px; padding:12px 20px; border-bottom:1px solid rgba(240,192,0,0.08);"><span style="font-size:14px; font-weight:bold; color:#f0c000;">+</span><span style="font-size:10px; color:#f0c000; letter-spacing:0.3em; text-transform:uppercase; font-weight:600;">Add Team Account</span></div>' +
+          '<div style="padding:20px; display:flex; gap:12px;">' +
+            '<input id="new-team-name" placeholder="Team name" style="flex:1; background:#080808; border:1px solid rgba(240,192,0,0.12); color:#f5f0e8; font-size:12px; padding:10px; font-family:inherit; outline:none;" />' +
+            '<input id="new-team-username" placeholder="Username" style="flex:1; background:#080808; border:1px solid rgba(240,192,0,0.12); color:#f5f0e8; font-size:12px; padding:10px; font-family:inherit; outline:none;" />' +
+            '<input id="new-team-password" type="password" placeholder="Password" style="flex:1; background:#080808; border:1px solid rgba(240,192,0,0.12); color:#f5f0e8; font-size:12px; padding:10px; font-family:inherit; outline:none;" />' +
+            '<button data-action="add-team" class="admin-btn-gold" style="font-family:inherit; flex-shrink:0;">+ ADD TEAM</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    }
+
+    else if (tab === "leaderboard") {
+      var sortedTeams = s.teams.map(function(t) { return Object.assign({}, t, { eq: totalEquity(t, s.companies) }); }).sort(function(a, b) { return b.eq - a.eq; });
+      var lbRows = sortedTeams.map(function(t, i) {
+        var tGain = t.eq - STARTING_CASH;
+        return '<tr style="border-bottom:1px solid rgba(240,192,0,0.04); ' + (i === 0 ? 'background:rgba(240,192,0,0.03);' : '') + '">' +
+          '<td style="padding:16px 20px; text-align:left;"><span style="font-size:13px; font-weight:900; color:' + (i === 0 ? '#f0c000' : '#555566') + ';">' + String(i + 1).padStart(2, '0') + '</span></td>' +
+          '<td style="padding:16px 20px; text-align:left;"><span style="font-size:12px; font-weight:bold; color:' + (i === 0 ? '#f0c000' : '#f5f0e8') + ';">' + esc(t.teamName) + '</span></td>' +
+          '<td style="padding:16px 20px; text-align:right;"><span style="font-size:12px; color:#aaaaaa;">$' + fmt(t.cash) + '</span></td>' +
+          '<td style="padding:16px 20px; text-align:right;"><span style="font-size:12px; color:#aaaaaa;">$' + fmt(stockPortfolioValue(t, s.companies)) + '</span></td>' +
+          '<td style="padding:16px 20px; text-align:right;"><span style="font-size:13px; font-weight:bold; color:#f5f0e8;">$' + fmt(t.eq) + '</span></td>' +
+          '<td style="padding:16px 20px; text-align:right;"><span style="font-size:12px; font-weight:600; color:' + (tGain >= 0 ? '#4caf7d' : '#cc2233') + ';">' + (tGain >= 0 ? '+' : '&minus;') + '$' + fmt(Math.abs(tGain)) + '</span></td>' +
+        '</tr>';
+      }).join("");
+
+      bodyHTML = '<div style="border:1px solid rgba(240,192,0,0.12); background:#0e0e0e;">' +
+        '<div style="display:flex; align-items:center; gap:8px; padding:12px 20px; border-bottom:1px solid rgba(240,192,0,0.08);"><div style="width:4px; height:16px; background:#f0c000;"></div><span style="font-size:10px; color:#f0c000; letter-spacing:0.3em; text-transform:uppercase; font-weight:600;">Leaderboard &middot; Round ' + s.round + '</span></div>' +
+        '<table style="width:100%; border-collapse:collapse;"><thead><tr style="border-bottom:1px solid rgba(240,192,0,0.06);">' + 
+          ['Rank','Team','Cash','Portfolio','Total Equity','Gain / Loss'].map(function(h,i) { return '<th style="padding:10px 20px; font-size:9px; color:#555566; letter-spacing:0.3em; text-transform:uppercase; font-weight:600; text-align:' + (i<=1?'left':'right') + ';">' + h + '</th>'; }).join('') + 
+        '</tr></thead><tbody>' + lbRows + '</tbody></table>' +
+      '</div>';
+    }
+
+    else if (tab === "settings") {
+      var teamOptions = s.teams.map(function(t) { return '<option value="' + esc(t.username) + '" style="background:#0e0e0e; color:#f5f0e8;">' + esc(t.teamName) + ' &mdash; $' + fmt(totalEquity(t, s.companies)) + '</option>'; }).join("");
+      
+      bodyHTML = '<div style="display:flex; gap:20px; align-items:flex-start;">' +
+        
+        // Change Password Form
+        '<div style="flex:1; border:1px solid rgba(240,192,0,0.12); background:#0e0e0e;">' +
+          '<div style="display:flex; align-items:center; gap:8px; padding:12px 20px; border-bottom:1px solid rgba(240,192,0,0.08);"><div style="width:4px; height:16px; background:#1a3a8f;"></div><span style="font-size:10px; color:#7aaaff; letter-spacing:0.3em; text-transform:uppercase; font-weight:600;">Change Admin Password</span></div>' +
+          '<div style="padding:20px; display:flex; flex-direction:column; gap:12px;">' +
+            
+            '<div><label style="font-size:9px; color:#555566; letter-spacing:0.3em; text-transform:uppercase; display:block; margin-bottom:6px;">Current Password</label>' +
+              '<div style="position:relative;"><input id="pw-current" type="password" style="width:100%; box-sizing:border-box; background:#080808; border:1px solid rgba(240,192,0,0.12); color:#f5f0e8; font-size:12px; padding:10px; padding-right:40px; outline:none; font-family:inherit;" />' +
+              '<button type="button" class="tx-eye-btn" data-action="toggle-password" data-target="pw-current" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); background:none; border:none; color:#555566; cursor:pointer; padding:4px; z-index:10; display:flex; align-items:center; justify-content:center;">' +
+                '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>' +
+              '</button></div>' +
+            '</div>' +
+
+            '<div><label style="font-size:9px; color:#555566; letter-spacing:0.3em; text-transform:uppercase; display:block; margin-bottom:6px;">New Password</label>' +
+              '<div style="position:relative;"><input id="pw-new" type="password" style="width:100%; box-sizing:border-box; background:#080808; border:1px solid rgba(240,192,0,0.12); color:#f5f0e8; font-size:12px; padding:10px; padding-right:40px; outline:none; font-family:inherit;" />' +
+              '<button type="button" class="tx-eye-btn" data-action="toggle-password" data-target="pw-new" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); background:none; border:none; color:#555566; cursor:pointer; padding:4px; z-index:10; display:flex; align-items:center; justify-content:center;">' +
+                '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>' +
+              '</button></div>' +
+            '</div>' +
+
+            '<div><label style="font-size:9px; color:#555566; letter-spacing:0.3em; text-transform:uppercase; display:block; margin-bottom:6px;">Confirm New Password</label>' +
+              '<div style="position:relative;"><input id="pw-confirm" type="password" style="width:100%; box-sizing:border-box; background:#080808; border:1px solid rgba(240,192,0,0.12); color:#f5f0e8; font-size:12px; padding:10px; padding-right:40px; outline:none; font-family:inherit;" />' +
+              '<button type="button" class="tx-eye-btn" data-action="toggle-password" data-target="pw-confirm" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); background:none; border:none; color:#555566; cursor:pointer; padding:4px; z-index:10; display:flex; align-items:center; justify-content:center;">' +
+                '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>' +
+              '</button></div>' +
+            '</div>' +
+
+            '<button data-action="change-admin-password" class="admin-btn-gold" style="margin-top:4px; width:100%; font-family:inherit;">UPDATE PASSWORD</button>' +
+            (local.flash ? '<div style="font-size:10px; padding:12px; margin-top:8px; border:1px solid ' + (local.flashOk ? '#4caf7d' : '#cc2233') + '40; background:' + (local.flashOk ? '#4caf7d' : '#cc2233') + '10; color:' + (local.flashOk ? '#4caf7d' : '#cc2233') + ';">' + esc(local.flash) + '</div>' : '') +
+          '</div>' +
+        '</div>' +
+
+        // Adjust Team Cash Form
+        '<div style="flex:1; border:1px solid rgba(240,192,0,0.12); background:#0e0e0e;">' +
+          '<div style="display:flex; align-items:center; gap:8px; padding:12px 20px; border-bottom:1px solid rgba(240,192,0,0.08);"><div style="width:4px; height:16px; background:#4caf7d;"></div><span style="font-size:10px; color:#4caf7d; letter-spacing:0.3em; text-transform:uppercase; font-weight:600;">Adjust Team Cash</span></div>' +
+          '<div style="padding:20px; display:flex; flex-direction:column; gap:12px;">' +
+            '<div><label style="font-size:9px; color:#555566; letter-spacing:0.3em; text-transform:uppercase; display:block; margin-bottom:6px;">Select Team</label><select id="adjust-cash-team" style="width:100%; box-sizing:border-box; background:#080808; border:1px solid rgba(240,192,0,0.12); color:#f5f0e8; font-size:12px; padding:10px; outline:none; font-family:inherit; cursor:pointer;">' + teamOptions + '</select></div>' +
+            '<div><label style="font-size:9px; color:#555566; letter-spacing:0.3em; text-transform:uppercase; display:block; margin-bottom:6px;">Amount</label><input id="adjust-cash-amount" type="number" min="1" placeholder="Amount (e.g. 5000)" style="width:100%; box-sizing:border-box; background:#080808; border:1px solid rgba(240,192,0,0.12); color:#f5f0e8; font-size:12px; padding:10px; outline:none; font-family:inherit;" /></div>' +
+            '<div style="display:flex; gap:12px; margin-top:4px;">' +
+              '<button data-action="add-cash" class="admin-btn-addcash" style="flex:1; font-family:inherit;">ADD CASH</button>' +
+              '<button data-action="remove-cash" class="admin-btn-subcash" style="flex:1; font-family:inherit;">DEDUCT CASH</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    }
+
+    document.getElementById("admin-body").innerHTML = bodyHTML;
+  }
+
   function buildTeamUI(team, container) {
     if (!team) return;
     var s = gameState;
     var tab = local.teamTab || "dashboard";
 
-    // 1. Build Persistent Shell (Stops Ticker Reset & Layout Shifts)
+    // 1. Build Persistent Shell
     if (!document.getElementById("tp-shell")) {
-      container.innerHTML = '<div id="tp-shell" style="width:100%; height:100%; display:flex; flex-direction:column;">' +
-        '<div id="tp-header" style="position: relative; display:flex; justify-content:space-between; align-items:center; padding:16px 32px; background:#080808; border-bottom:1px solid rgba(240,192,0,0.1); width:100%; box-sizing:border-box; flex-shrink:0;"></div>' +
-        '<div id="tp-ticker" class="tp-ticker-wrap"></div>' +
-        '<div id="tp-tabs" style="display:flex; padding:0 32px; border-bottom:1px solid rgba(240,192,0,0.1); width:100%; box-sizing:border-box; background:#080808; flex-shrink:0;"></div>' +
-        '<div id="tp-body" style="flex:1; overflow-y:auto; background:#080808;"></div>' +
+      container.innerHTML = '<div id="tp-shell" style="position:relative; width:100%; height:100%; display:flex; flex-direction:column; overflow:hidden;">' +
+        
+        // --- ADDED GRID BACKGROUND ---
+        '<div id="tp-bg" style="position:absolute; inset:0; pointer-events:none; z-index:0; opacity:0.3;">' +
+          '<svg style="width:100%; height:100%;" preserveAspectRatio="xMidYMid slice" viewBox="0 0 1440 900">' +
+            '<g opacity="0.1">' +
+              Array.from({length:23}).map(function(_,i){ return '<line x1="'+(i*64)+'" y1="0" x2="'+(i*64)+'" y2="900" stroke="#f0c000" stroke-width="0.5"/>'; }).join('') +
+              Array.from({length:15}).map(function(_,i){ return '<line x1="0" y1="'+(i*64)+'" x2="1440" y2="'+(i*64)+'" stroke="#f0c000" stroke-width="0.5"/>'; }).join('') +
+            '</g>' +
+            '<path d="M0,200 L1440,200" stroke="#1a3a8f" stroke-width="1.5" opacity="0.1" stroke-dasharray="4 4"/>' +
+          '</svg>' +
+        '</div>' +
+        // -----------------------------
+
+        '<div id="tp-header" style="position:relative; z-index:10; display:flex; justify-content:space-between; align-items:center; padding:16px 32px; border-bottom:1px solid rgba(240,192,0,0.1); flex-shrink:0;"></div>' +
+        '<div id="tp-ticker" class="tp-ticker-wrap" style="position:relative; z-index:10; flex-shrink:0;"></div>' +
+        '<div id="tp-tabs" style="position:relative; z-index:10; display:flex; gap:0; padding:0 32px; border-bottom:1px solid rgba(240,192,0,0.1); flex-shrink:0;"></div>' +
+        '<div id="tp-body" style="position:relative; z-index:10; flex:1; padding:24px 32px; display:flex; flex-direction:column; min-height:0; overflow-y:auto;"></div>' +
       '</div>';
     }
 
@@ -816,27 +1171,35 @@ body {
         '</div>' +
       '</div>' +
       '<div style="display:flex; align-items:center; gap:12px;">' +
-        '<div style="display:flex; align-items:center; gap:8px; border:1px solid rgba(76,175,125,0.3); padding:6px 16px; color:#4caf7d; font-size:10px; letter-spacing:0.25em; text-transform:uppercase; font-weight:600;"><span style="width:6px; height:6px; border-radius:50%; background:#4caf7d;"></span> LIVE</div>' +
+        '<div data-action="easter-egg" style="display:flex; align-items:center; gap:8px; border:1px solid rgba(76,175,125,0.3); padding:6px 16px; color:#4caf7d; font-size:10px; letter-spacing:0.25em; text-transform:uppercase; font-weight:600; cursor:pointer; transition:all 0.2s;" onmouseover="this.style.background=\'rgba(76,175,125,0.1)\'" onmouseout="this.style.background=\'transparent\'"><span style="width:6px; height:6px; border-radius:50%; background:#4caf7d;"></span> LIVE</div>' +
         '<button data-action="logout" class="tp-header-btn">LOG OUT</button>' +
       '</div>';
 
-    // 3. Update Ticker (Only fires if prices actually change, stopping resets)
+    // 3. Update Ticker (Seamless DOM Update)
     var tickerEl = document.getElementById("tp-ticker");
     var currentPrices = JSON.stringify(s.companies.map(function(c){ return c.price; }));
     
-    if (tickerEl.getAttribute("data-prices") !== currentPrices) {
-      var tickerItems = s.companies.concat(s.companies).concat(s.companies).map(function(c) {
+    if (tickerEl && tickerEl.getAttribute("data-prices") !== currentPrices) {
+      var track = [];
+      for (var i = 0; i < 12; i++) track = track.concat(s.companies); // Duplicate 12 times
+
+      var tickerItems = track.map(function(c) {
         var change = c.price - c.prevPrice;
         var pct = c.prevPrice ? (change / c.prevPrice) * 100 : 0;
         var up = change >= 0;
-        var color = up ? "#4caf7d" : "#cc2233";
         return '<div class="tp-ticker-item">' +
           '<span style="font-size:11px; font-weight:900; color:var(--gold);">' + esc(c.name) + '</span>' +
           '<span style="font-size:11px; color:#aaaaaa;">$' + fmt(c.price) + '</span>' +
-          '<span style="font-size:10px; font-weight:600; color:' + color + ';">' + (up ? '+' : '') + pct.toFixed(2) + '%</span>' +
+          '<span style="font-size:10px; font-weight:600; color:' + (up ? '#4caf7d' : '#cc2233') + ';">' + (up ? '+' : '') + pct.toFixed(2) + '%</span>' +
         '</div>';
       }).join("");
-      tickerEl.innerHTML = '<div class="tp-ticker-track">' + tickerItems + '</div>';
+      
+      var existingTrack = tickerEl.querySelector(".tp-ticker-track");
+      if (existingTrack) {
+        existingTrack.innerHTML = tickerItems; // Updates text while keeping animation running
+      } else {
+        tickerEl.innerHTML = '<div class="tp-ticker-track">' + tickerItems + '</div>';
+      }
       tickerEl.setAttribute("data-prices", currentPrices);
     }
 
@@ -979,6 +1342,101 @@ body {
     }
   }
 
+  function showEasterEgg() {
+    if (document.getElementById("ee-container")) return;
+
+    var ee = document.createElement("div");
+    ee.id = "ee-container";
+    ee.className = "ee-overlay";
+    
+    ee.innerHTML = '<div class="ee-modal">' +
+      '<div class="ee-inner">' +
+        '<div class="ee-title"><div class="ee-line"></div>SYSTEM ARCHITECTS<div class="ee-line"></div></div>' +
+        '<div class="ee-name">Ch Muhammad Umer Shahid</div>' +
+        '<div class="ee-role">Maker & Developer of Website<br><span class="ee-subtext">(The brains behind the build and website)</span></div>' +
+        '<div class="ee-name" style="margin-top: 12px;">Ayesha Irfan</div>' +
+        '<div class="ee-role">Visionary & Strategist<br><span class="ee-subtext">(The brains behind the core idea)</span></div>' +
+        '<button id="ee-close-btn" class="ee-btn">RESPECT</button>' +
+      '</div>' +
+    '</div>';
+    
+    document.body.appendChild(ee);
+    
+    document.getElementById("ee-close-btn").addEventListener("click", function() {
+      ee.style.animation = "none";
+      ee.style.opacity = "0";
+      ee.style.transition = "opacity 0.2s ease";
+      setTimeout(function() { ee.remove(); }, 200);
+    });
+  }
+
+  // --- ADMIN LOGGING HELPER ---
+  function addAdminLog(text, type) {
+    if (!local.activityLog) local.activityLog = [];
+    local.activityLog.unshift({
+      id: Date.now(),
+      text: text,
+      type: type, 
+      time: new Date().toLocaleTimeString("en-US", { hour12: false })
+    });
+    if (local.activityLog.length > 50) local.activityLog.pop(); // Keeps the last 50 events
+    render();
+  }
+
+  // --- COMPLETE UI EVENT ROUTER ---
+  document.addEventListener("click", function (e) {
+    var btn = e.target.closest("[data-action]");
+    if (!btn) return;
+    
+    var action = btn.getAttribute("data-action");
+    
+    // Global Actions
+    if (action === "connect") { e.preventDefault(); connectStream(); } 
+    else if (action === "login") { e.preventDefault(); submitLogin(); } 
+    else if (action === "logout") { e.preventDefault(); doLogout(); }
+    else if (action === "easter-egg") { e.preventDefault(); showEasterEgg(); } // NEW TRIGGER
+    else if (action === "toggle-password") {
+      e.preventDefault();
+      var targetId = btn.getAttribute("data-target");
+      var input = document.getElementById(targetId);
+      
+      var eyeSVG = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
+      var eyeOffSVG = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"></path><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"></path><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"></path><line x1="2" x2="22" y1="2" y2="22"></line></svg>';
+
+      if (input) {
+        if (input.type === "password") { 
+          input.type = "text"; 
+          btn.classList.add("is-visible");
+          btn.innerHTML = eyeOffSVG; 
+        } else { 
+          input.type = "password"; 
+          btn.classList.remove("is-visible");
+          btn.innerHTML = eyeSVG;
+        }
+      }
+    }
+    
+    // Team Actions
+    else if (action === "set-team-tab") { e.preventDefault(); local.teamTab = btn.getAttribute("data-tab"); render(); } 
+    else if (action === "select-company-row") { e.preventDefault(); local.selectedCompanyId = btn.getAttribute("data-id"); render(); } 
+    else if (action === "buy") { e.preventDefault(); buyShares(); } 
+    else if (action === "sell") { e.preventDefault(); sellShares(); }
+    
+    // Admin Actions
+    else if (action === "set-admin-tab") { e.preventDefault(); local.adminTab = btn.getAttribute("data-tab"); render(); }
+    else if (action === "toggle-market") { e.preventDefault(); toggleMarket(); }
+    else if (action === "next-round") { e.preventDefault(); nextRound(); }
+    else if (action === "reset-game") { e.preventDefault(); resetGame(); }
+    else if (action === "apply-price") { e.preventDefault(); applyPrice(btn.getAttribute("data-id")); }
+    else if (action === "delete-company") { e.preventDefault(); deleteCompany(btn.getAttribute("data-id")); }
+    else if (action === "add-company") { e.preventDefault(); addCompany(); }
+    else if (action === "delete-team") { e.preventDefault(); deleteTeam(btn.getAttribute("data-id")); }
+    else if (action === "add-team") { e.preventDefault(); addTeam(); }
+    else if (action === "change-admin-password") { e.preventDefault(); changeAdminPassword(); }
+    else if (action === "add-cash") { e.preventDefault(); adjustCash(true); }
+    else if (action === "remove-cash") { e.preventDefault(); adjustCash(false); }
+  });
+
   // Actions
  function doLogin() {
     if (!ws || ws.readyState !== WebSocket.OPEN) {
@@ -1022,22 +1480,50 @@ body {
   }
 
   function doLogout() {
-    role = null; 
-    currentTeamUsername = null; 
-    local.flash = null; 
-    local.tradeQty = ""; 
-    local.teamTab = "dashboard"; 
-    local.selectedCompanyId = null; // Forces the top stock to be selected on next login
+    // 1. Extract the Live Activity log so it survives the purge
+    var savedLogs = local.activityLog || [];
+
+    // 2. Nuke the entire local state dictionary. 
+    // This instantly resets the admin tab to "overview", the team tab to "dashboard", 
+    // clears the selected dropdowns, and wipes any stored text memory.
+    local = {};
+
+    // 3. Inject the surviving logs back into the freshly wiped state
+    local.activityLog = savedLogs;
+
+    // 4. Revoke access and wipe the role
+    role = null;
+    
+    // 5. Clear any lingering error messages on the login screen
+    var flashEl = document.getElementById("login-flash");
+    if (flashEl) flashEl.innerText = "";
+
+    // 6. Rebuild the screen
     render();
   }
 
-  function toggleMarket() { sendAction("toggle-market"); }
+  function toggleMarket() { 
+    sendAction("toggle-market"); 
+    addAdminLog(gameState.marketOpen ? "Market closed by admin" : "Market opened by admin", "market");
+  }
   
   function applyPrice(id) {
     var input = document.getElementById("price-edit-" + id);
     var val = input ? input.value : "";
+    
+    // If the box is empty, stop completely. Do not send data, do not log.
     if (val === "" || val === undefined) return;
-    sendAction("apply-price", { id: id, modifier: Number(val) });
+    
+    var modifier = Number(val);
+    sendAction("apply-price", { id: id, modifier: modifier });
+    
+    // Look up the company name and log the result
+    var company = gameState.companies.find(function(c) { return c.id === id; });
+    if (company) {
+      var dir = modifier >= 0 ? "increased" : "decreased";
+      addAdminLog(company.name + " price " + dir + " by $" + Math.abs(modifier), modifier >= 0 ? "trade-up" : "trade-down");
+    }
+    
     if (input) input.value = ""; 
   }
 
@@ -1048,12 +1534,13 @@ body {
     
     if (!q || q <= 0) return flash("INVALID QUANTITY.", false);
     
-    // 1. Wipe memory and UI FIRST
+    // 1. Trigger the flash and send the data
+    flash("BOUGHT " + q + " STOCKS", true);
+    
+    // 2. Wipe memory and UI FIRST
     local.tradeQty = ""; 
     if (qtyInput) qtyInput.value = ""; 
-    
-    // 2. Trigger the flash and send the data
-    flash("PROCESSING BUY...", true); 
+     
     sendAction("buy", { companyId: selectedId, quantity: q });
   }
 
@@ -1064,22 +1551,25 @@ body {
     
     if (!q || q <= 0) return flash("INVALID QUANTITY.", false);
     
-    // 1. Wipe memory and UI FIRST
+    // 1. Trigger the flash (false = red) and send the data
+    flash("SOLD " + q + " STOCKS", false);
+
+    // 2. Wipe memory and UI FIRST
     local.tradeQty = ""; 
     if (qtyInput) qtyInput.value = ""; 
     
-    // 2. Trigger the flash (false = red) and send the data
-    flash("PROCESSING SELL...", false);
     sendAction("sell", { companyId: selectedId, quantity: q });
   }
 
   function nextRound() { 
     sendAction("next-round"); 
+    addAdminLog("Advanced to Round " + (gameState.round + 1), "round");
   }
   
   function resetGame() {
     if (!window.confirm("Reset all teams to $100,000 and clear all holdings?")) return;
     sendAction("reset-game");
+    addAdminLog("Game reset by admin", "reset");
   }
 
   function addCompany() {
@@ -1150,10 +1640,17 @@ body {
     var teamUser = (document.getElementById("adjust-cash-team") || {}).value || "";
     var amt = Number((document.getElementById("adjust-cash-amount") || {}).value || 0);
     
+    // If invalid input, flash error and stop.
     if (!teamUser || amt <= 0) return flash("Enter a valid positive amount.", false);
     
     var finalAmt = isAdding ? amt : -amt;
     sendAction("adjust-cash", { username: teamUser, amount: finalAmt });
+    
+    // Look up the team name and log the result
+    var team = gameState.teams.find(function(t) { return t.username === teamUser; });
+    if (team) {
+      addAdminLog((isAdding ? "Added $" : "Deducted $") + fmt(amt) + (isAdding ? " to " : " from ") + team.teamName, isAdding ? "trade-up" : "trade-down");
+    }
     
     var input = document.getElementById("adjust-cash-amount");
     if (input) input.value = "";
@@ -1245,43 +1742,6 @@ document.addEventListener("click", function (e) {
       var modal = document.getElementById("easter-egg-modal");
       if (modal) modal.classList.add("active");
       secretInput = ""; // Clear buffer
-    }
-  });
-
-  var secretInput = "";
-  
-  var style = document.createElement("style");
-  style.innerHTML = 
-    ".egg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(2,6,23,0.85); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }" +
-    ".egg-overlay.active { opacity: 1; pointer-events: auto; }" +
-    ".egg-card { background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%); border: 2px solid var(--gold); padding: 40px; border-radius: 16px; text-align: center; box-shadow: 0 0 30px rgba(251,191,36,0.3); max-width: 400px; width: 90%; transform: scale(0.8); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }" +
-    ".egg-overlay.active .egg-card { transform: scale(1); }" +
-    ".egg-glow { text-shadow: 0 0 10px var(--gold); color: var(--gold); font-size: 24px; font-weight: 800; margin-bottom: 8px; }";
-  document.head.appendChild(style);
-  var eggDiv = document.createElement("div");
-  eggDiv.id = "easter-egg-modal";
-  eggDiv.className = "egg-overlay";
-  eggDiv.innerHTML = '<div class="egg-card">' +
-    '<div style="font-size: 48px; margin-bottom: 16px;">&#9818;</div>' +
-    '<div class="egg-glow">ARCHITECTS OF THE SYSTEM</div>' +
-    '<p style="color: var(--text); font-size: 18px; font-weight: 600; margin: 20px 0 28px;">Ch Umer Shahid &amp; Ayesha Irfan</p>' +
-    '<button class="btn btn-ghost" id="close-egg" style="padding: 8px 24px; font-size: 12px;">Respect to the Founders</button>' +
-  '</div>';
-  document.body.appendChild(eggDiv);
-  document.getElementById("close-egg").addEventListener("click", function() {
-    eggDiv.classList.remove("active");
-  });
-  document.addEventListener("keydown", function (e) {
-    if (e.target.tagName === "INPUT" || e.target.tagName === "SELECT") return;
-
-    secretInput += e.key.toLowerCase();
-    if (secretInput.length > 10) {
-      secretInput = secretInput.substring(secretInput.length - 10);
-    }
-
-    if (secretInput.includes("umer") || secretInput.includes("ayesha")) {
-      eggDiv.classList.add("active");
-      secretInput = ""; 
     }
   });
   
