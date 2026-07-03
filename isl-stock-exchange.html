@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>ISL Stock Exchange</title>
+<title>MSX Terminal</title>
 <link rel="icon" type="image/png" href="https://www.google.com/s2/favicons?domain=isl.school&sz=256">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;900&display=swap');
@@ -334,7 +334,7 @@ body {
         <!-- Top Header -->
         <header style="position: absolute; top: 0; left: 0; right: 0; display: flex; justify-content: space-between; padding: 16px 32px; z-index: 10;">
           <div style="display: flex; align-items: center; gap: 12px;">
-            <div style="width: 24px; height: 24px; background: var(--gold); display: flex; align-items: center; justify-content: center; color: black; font-size: 10px; font-weight: 900;">ISL</div>
+            <div style="width: 24px; height: 24px; background: var(--gold); display: flex; align-items: center; justify-content: center; color: black; font-size: 10px; font-weight: 900;">MSX</div>
             <span style="font-size: 11px; color: var(--text-muted); letter-spacing: 0.3em; text-transform: uppercase;">Markhor Stock Exchange Terminal</span>
           </div>
           <div data-action="easter-egg" style="font-size: 10px; color: #555566; letter-spacing: 0.3em; cursor: pointer; transition: color 0.2s;" onmouseover="this.style.color='#f0c000'" onmouseout="this.style.color='#555566'">SYS 4.1.0</div>
@@ -371,7 +371,7 @@ body {
 
           <div style="margin-bottom: 20px;">
             <label class="tx-label">Username</label>
-            <input id="login-username" class="tx-input" type="text" placeholder="trader@isl.io" />
+            <input id="login-username" class="tx-input" type="text" placeholder="trader@msx.io" />
           </div>
 
           <div style="margin-bottom: 24px; position: relative;">
@@ -683,7 +683,6 @@ body {
   }
 
   // --- AUTHENTICATION LOGIC ---
-// --- AUTHENTICATION LOGIC ---
   function submitLogin() {
     var flash = document.getElementById("login-flash");
     var u = (document.getElementById("login-username").value || "").trim().toLowerCase();
@@ -876,7 +875,7 @@ body {
 
     document.getElementById("admin-header").innerHTML =
       '<div style="display:flex; align-items:center; gap:12px;">' +
-        '<div style="width:24px; height:24px; background:var(--gold); display:flex; align-items:center; justify-content:center; color:black; font-size:10px; font-weight:900;">ISL</div>' +
+        '<div style="width:24px; height:24px; background:var(--gold); display:flex; align-items:center; justify-content:center; color:black; font-size:10px; font-weight:900;">MSX</div>' +
         '<span style="font-size:11px; color:#555566; letter-spacing:0.3em; text-transform:uppercase;">Markhor Stock Exchange Terminal</span>' +
       '</div>' +
       '<div style="display:flex; flex-direction:column; align-items:center; gap:4px; position:absolute; left:50%; transform:translateX(-50%);">' +
@@ -1160,7 +1159,7 @@ body {
     // 2. Update Header (Fixed LIVE badge styling)
     document.getElementById("tp-header").innerHTML =
       '<div style="display:flex; align-items:center; gap:12px;">' +
-        '<div style="width:24px; height:24px; background:var(--gold); display:flex; align-items:center; justify-content:center; color:black; font-size:10px; font-weight:900;">ISL</div>' +
+        '<div style="width:24px; height:24px; background:var(--gold); display:flex; align-items:center; justify-content:center; color:black; font-size:10px; font-weight:900;">MSX</div>' +
         '<span style="font-size:11px; color:#555566; letter-spacing:0.3em; text-transform:uppercase;">Markhor Stock Exchange Terminal</span>' +
       '</div>' +
       '<div style="display:flex; flex-direction:column; align-items:center; gap:4px; position:absolute; left:50%; transform:translateX(-50%);">' +
@@ -1288,7 +1287,7 @@ body {
         '</div>';
       }).join("");
 
-      if (!holdingsRows) holdingsRows = '<div style="padding:48px 20px; text-align:center; color:#333344; font-size:11px; letter-spacing:0.2em;">NO POSITIONS HELD</div>';
+      if (!holdingsRows) holdingsRows = '<div style="padding:48px 20px; text-align:center; color:#333344; font-size:11px; letter-spacing:0.2em;">NO SHARES HELD</div>';
 
       var holdingsPanelHTML = '<div style="flex:1; border:1px solid rgba(240,192,0,0.12); background:#0e0e0e; display:flex; flex-direction:column; max-height:380px;">' +
         '<div class="tp-table-head" style="border-bottom:1px solid rgba(240,192,0,0.08);"><div style="width:4px; height:16px; background:#4caf7d;"></div><span style="font-size:10px; color:#4caf7d; letter-spacing:0.3em; text-transform:uppercase; font-weight:600;">YOUR HOLDINGS</span></div>' +
@@ -1527,40 +1526,64 @@ body {
     if (input) input.value = ""; 
   }
 
+  // --- ANTI-SPAM LOCK ---
+  var isTrading = false; 
+
   function buyShares() {
+    if (isTrading) return; // Block phantom double-clicks
+    
     var selectedId = local.selectedCompanyId || (gameState.companies[0] && gameState.companies[0].id);
     var qtyInput = document.getElementById("trade-qty");
     var q = qtyInput ? Number(qtyInput.value) : Number(local.tradeQty || 0);
     
     if (!q || q <= 0) return flash("INVALID QUANTITY.", false);
+
+    var company = gameState.companies.find(function(c) { return c.id === selectedId; });
+    if (!company) return flash("PLEASE SELECT A STOCK.", false);
+    
+    // Lock the trigger
+    isTrading = true;
     
     // 1. Trigger the flash and send the data
-    flash("BOUGHT " + q + " STOCKS", true);
+    flash("BOUGHT " + q + " SHARES OF " + company.name.toUpperCase(), true);
     
     // 2. Wipe memory and UI FIRST
     local.tradeQty = ""; 
     if (qtyInput) qtyInput.value = ""; 
      
     sendAction("buy", { companyId: selectedId, quantity: q });
+
+    // Unlock after 180ms
+    setTimeout(function() { isTrading = false; }, 180); 
   }
 
   function sellShares() {
+    if (isTrading) return; // Block phantom double-clicks
+
     var selectedId = local.selectedCompanyId || (gameState.companies[0] && gameState.companies[0].id);
     var qtyInput = document.getElementById("trade-qty");
     var q = qtyInput ? Number(qtyInput.value) : Number(local.tradeQty || 0);
     
     if (!q || q <= 0) return flash("INVALID QUANTITY.", false);
+
+    var company = gameState.companies.find(function(c) { return c.id === selectedId; });
+    if (!company) return flash("PLEASE SELECT A STOCK.", false);
+    
+    // Lock the trigger
+    isTrading = true;
     
     // 1. Trigger the flash (false = red) and send the data
-    flash("SOLD " + q + " STOCKS", false);
+    flash("SOLD " + q + " SHARES OF " + company.name.toUpperCase(), false);
 
     // 2. Wipe memory and UI FIRST
     local.tradeQty = ""; 
     if (qtyInput) qtyInput.value = ""; 
     
     sendAction("sell", { companyId: selectedId, quantity: q });
-  }
 
+    // Unlock after 180ms
+    setTimeout(function() { isTrading = false; }, 180); 
+  }
   function nextRound() { 
     sendAction("next-round"); 
     addAdminLog("Advanced to Round " + (gameState.round + 1), "round");
@@ -1667,59 +1690,6 @@ body {
       local.tradeQty = e.target.value;
     }
   });
-
-  // --- COMPLETE UI EVENT ROUTER ---
-document.addEventListener("click", function (e) {
-  var btn = e.target.closest("[data-action]");
-  if (!btn) return;
-  
-  var action = btn.getAttribute("data-action");
-  
-  if (action === "connect") { 
-    e.preventDefault(); 
-    connectStream(); 
-  } 
-  else if (action === "login") { 
-    e.preventDefault(); 
-    submitLogin(); 
-  } 
-  else if (action === "toggle-password") {
-    e.preventDefault();
-    var targetId = btn.getAttribute("data-target");
-    var input = document.getElementById(targetId);
-    if (input) {
-      if (input.type === "password") {
-        input.type = "text";
-        btn.style.color = "var(--gold)"; 
-      } else {
-        input.type = "password";
-        btn.style.color = "var(--text-muted)";
-      }
-    }
-  }
-  else if (action === "logout") { 
-    e.preventDefault(); 
-    doLogout(); 
-  } 
-  else if (action === "set-team-tab") { 
-    e.preventDefault(); 
-    local.teamTab = btn.getAttribute("data-tab"); 
-    render(); 
-  } 
-  else if (action === "select-company-row") {
-    e.preventDefault();
-    local.selectedCompanyId = btn.getAttribute("data-id");
-    render();
-  } 
-  else if (action === "buy") { 
-    e.preventDefault(); 
-    buyShares(); 
-  } 
-  else if (action === "sell") { 
-    e.preventDefault(); 
-    sellShares(); 
-  }
-});
 
   document.addEventListener("change", function (e) {
     if (e.target && e.target.id === "trade-select") { local.selectedCompanyId = e.target.value; render(); }
