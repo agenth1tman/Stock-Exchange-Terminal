@@ -542,7 +542,7 @@ body {
 
   function sendAction(actionName, payload) {
     if (ws && ws.readyState === WebSocket.OPEN) {
-      var basePayload = { action: actionName };
+      var basePayload = { action: actionName, authPass: local.authPass }; // ALWAYS SEND PASSWORD
       if (role === "admin") basePayload.admin = true;
       if (role === "team") basePayload.username = currentTeamUsername;
       ws.send(JSON.stringify(Object.assign(basePayload, payload || {})));
@@ -550,7 +550,6 @@ body {
       flash("NOT CONNECTED TO SERVER.", false);
     }
   }
-
   // --- WEBSOCKET PIPELINE ---
   var ws = null;
 
@@ -559,17 +558,27 @@ body {
     var finalUrl = "ws://localhost:8000/ws"; // Fallback
 
     if (urlInput) {
-      // 1. Force websocket protocol
-      var tempUrl = urlInput.replace("http://", "ws://").replace("https://", "wss://");
-      if (!tempUrl.startsWith("ws://") && !tempUrl.startsWith("wss://")) {
-        tempUrl = "ws://" + tempUrl;
-      }
+      // 1. Strip existing protocols if the user pasted them
+      var tempUrl = urlInput.replace("http://", "").replace("https://", "").replace("ws://", "").replace("wss://", "");
       
-      // 2. Use native URL parser to inject missing Uvicorn port and endpoint
+      // 2. Smart Protocol Detection
+      // If it's localhost or an IPv4 address, it's an unencrypted local server. Otherwise, it's a secure Cloudflare/Web domain.
+      var isLocal = tempUrl.startsWith("localhost") || tempUrl.match(/^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/);
+      tempUrl = (isLocal ? "ws://" : "wss://") + tempUrl;
+      
+      // 3. Smart Port Injection
       try {
         var parsed = new URL(tempUrl);
-        if (!parsed.port) parsed.port = "8000"; 
-        if (parsed.pathname === "/" || parsed.pathname === "") parsed.pathname = "/ws";
+        
+        // ONLY force port 8000 if it is a local test environment! 
+        // Cloudflare URLs will now correctly default to port 443.
+        if (isLocal && !parsed.port) {
+          parsed.port = "8000"; 
+        }
+        
+        if (parsed.pathname === "/" || parsed.pathname === "") {
+            parsed.pathname = "/ws";
+        }
         finalUrl = parsed.href;
       } catch (e) {
         console.error("Invalid URL format:", tempUrl);
@@ -582,12 +591,10 @@ body {
     
     // --- DEFENSIVE CONNECTION LOCK ---
     if (ws) {
-      // If we are already trying to connect, ignore the button click entirely
       if (ws.readyState === WebSocket.CONNECTING) {
         console.warn("Connection attempt already in progress. Ignoring click.");
         return; 
       }
-      // Otherwise, clean up the old connection before starting a new one
       ws.close();
     }
 
@@ -604,7 +611,6 @@ body {
       var floatingPanel = document.getElementById("floating-panel");
       if (floatingPanel) floatingPanel.classList.add("hidden");
       
-      // Poke the server to force it to broadcast the state
       ws.send(JSON.stringify({ action: "get_state" })); 
     };
 
@@ -618,7 +624,6 @@ body {
       var floatingPanel = document.getElementById("floating-panel");
       if (floatingPanel) floatingPanel.classList.remove("hidden");
       
-      // If the user was actively logged in, boot them to the login screen
       if (role) {
         doLogout();
         var loginFlash = document.getElementById("login-flash");
@@ -632,12 +637,11 @@ body {
     ws.onmessage = function (event) {
       var msg = JSON.parse(event.data);
       
-      // NEW: Catch live trade alerts from Python and feed them to the Admin log
       if (msg.type === "log") {
         if (typeof addAdminLog === "function" && role === "admin") {
             addAdminLog(msg.text, msg.logType);
         }
-        return; // Halt here so we don't trigger a full UI redraw
+        return;
       }
 
       if (msg.type === "state") {
@@ -646,12 +650,11 @@ body {
       else if (msg.teams !== undefined || msg.companies !== undefined) {
         gameState = msg;
       }
-      // AGGRESSIVE ERROR CATCHER: Intercepts raw Python errors
       else if (msg.type === "error" || msg.error !== undefined || msg.message !== undefined) {
         var errorText = (msg.message || msg.error || "UNKNOWN SERVER REJECTION").toUpperCase();
         
         if (role === "team" || role === "admin") {
-            flash(errorText, false); // Push to the dashboard
+            flash(errorText, false); 
         } else {
             var loginFlash = document.getElementById("login-flash");
             if (loginFlash) {
@@ -659,14 +662,11 @@ body {
               loginFlash.style.color = "var(--loss)";
             }
         }
-        return; // Halt execution so it doesn't crash the renderer
+        return; 
       }
 
-      // Render the valid state
       if (gameState) {
-        // --- ANIMATION TRIGGER LOGIC ---
         if (lastMarketState !== null && lastMarketState !== gameState.marketOpen) {
-            // ONLY fire the sliding lock animation on the Team Dashboard
             if (role === "team") {
                 triggerMarketAnimation(gameState.marketOpen);
             }
@@ -1451,11 +1451,11 @@ body {
 
     // 1. Strict Admin Lock
     if (userLower === "admin") {
-      // Pulls the password securely from the SQLite data
       if (password === gameState.adminPassword) {
         role = "admin";
         currentTeamUsername = null;
-        render(); // Draws the admin dashboard
+        local.authPass = password; // NEW: Save secret in memory
+        render(); 
       } else {
         local.flash = "Incorrect admin password.";
         render();
@@ -1471,7 +1471,8 @@ body {
     if (team) {
       role = "team";
       currentTeamUsername = team.username;
-      render(); // Draws the team dashboard
+      local.authPass = password; // NEW: Save secret in memory
+      render(); 
     } else {
       local.flash = "Incorrect team username or password.";
       render();
@@ -1651,6 +1652,7 @@ body {
     if (next.length < 4) return flash("Password must be at least 4 characters.", false);
     
     sendAction("change-password", { next: next });
+    local.authPass = next; // Update the local memory instantly
     flash("Admin password updated successfully.", true);
     
     // Clear inputs

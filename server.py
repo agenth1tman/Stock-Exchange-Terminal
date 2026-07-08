@@ -105,15 +105,23 @@ app = FastAPI(lifespan=lifespan)
 
 async def process_action(payload: dict):
     action = payload.get("action")
+    auth_pass = payload.get("authPass", "") # Extract the hidden password
     
     async with aiosqlite.connect(DB_FILE) as db:
         
+        # --- ZERO-TRUST ADMIN VERIFICATION ---
+        async with db.execute("SELECT value FROM system WHERE key = 'adminPassword'") as cursor:
+            admin_pw = (await cursor.fetchone())[0]
+            
+        # Is the sender actually the admin, and did they provide the exact correct password?
+        is_admin = (payload.get("admin") is True) and (auth_pass == admin_pw)
+        
         # --- ADMIN ACTIONS ---
-        if action == "toggle-market" and payload.get("admin"):
+        if action == "toggle-market" and is_admin:
             await db.execute("UPDATE system SET value = CASE WHEN value = 'true' THEN 'false' ELSE 'true' END WHERE key = 'marketOpen'")
             await db.commit()
             
-        elif action == "apply-price" and payload.get("admin"):
+        elif action == "apply-price" and is_admin:
             cid = payload.get("id")
             modifier = float(payload.get("modifier", 0))
             await db.execute("""
@@ -123,23 +131,24 @@ async def process_action(payload: dict):
             """, (modifier, cid))
             await db.commit()
             
-        elif action == "next-round" and payload.get("admin"):
+        elif action == "next-round" and is_admin:
             await db.execute("UPDATE system SET value = CAST(value AS INTEGER) + 1 WHERE key = 'round'")
             await db.commit()
 
-        elif action == "reset-game" and payload.get("admin"):
+        elif action == "reset-game" and is_admin:
             await db.execute("UPDATE system SET value = '1' WHERE key = 'round'")
             await db.execute("UPDATE system SET value = 'false' WHERE key = 'marketOpen'")
             await db.execute("UPDATE teams SET cash = 100000.0")
             await db.execute("DELETE FROM holdings")
             await db.commit()
 
-        elif action == "add-company" and payload.get("admin"):
+        elif action == "add-company" and is_admin:
             import time
             new_id = "c" + str(int(time.time() * 1000))
             name = payload.get("name")
             industry = payload.get("industry")
             price = float(payload.get("price", 10.0))
+            if price <= 0: return "INVALID PRICE."
             
             await db.execute(
                 "INSERT INTO companies (id, name, industry, price, prevPrice) VALUES (?, ?, ?, ?, ?)",
@@ -147,13 +156,13 @@ async def process_action(payload: dict):
             )
             await db.commit()
 
-        elif action == "delete-company" and payload.get("admin"):
+        elif action == "delete-company" and is_admin:
             cid = payload.get("id")
             await db.execute("DELETE FROM companies WHERE id = ?", (cid,))
             await db.execute("DELETE FROM holdings WHERE company_id = ?", (cid,))
             await db.commit()
 
-        elif action == "add-team" and payload.get("admin"):
+        elif action == "add-team" and is_admin:
             username = payload.get("username").lower()
             password = payload.get("password")
             team_name = payload.get("teamName")
@@ -171,19 +180,19 @@ async def process_action(payload: dict):
             )
             await db.commit()
 
-        elif action == "delete-team" and payload.get("admin"):
+        elif action == "delete-team" and is_admin:
             username = payload.get("username")
             await db.execute("DELETE FROM teams WHERE username = ?", (username,))
             await db.execute("DELETE FROM holdings WHERE username = ?", (username,))
             await db.commit()
 
-        elif action == "change-password" and payload.get("admin"):
+        elif action == "change-password" and is_admin:
             next_pw = payload.get("next")
             if next_pw:
                 await db.execute("UPDATE system SET value = ? WHERE key = 'adminPassword'", (next_pw,))
                 await db.commit()
 
-        elif action == "adjust-cash" and payload.get("admin"):
+        elif action == "adjust-cash" and is_admin:
             username = payload.get("username")
             amt = float(payload.get("amount", 0))
             if username:
@@ -191,77 +200,68 @@ async def process_action(payload: dict):
                 await db.commit()
 
         # --- TEAM ACTIONS ---
-        elif action == "buy" and payload.get("username"):
+        elif action in ["buy", "sell"] and payload.get("username"):
             username = payload.get("username")
+            
+            # ZERO-TRUST IDENTITY VERIFICATION: Does the provided password match this username?
+            async with db.execute("SELECT password, teamName FROM teams WHERE username = ?", (username,)) as cursor:
+                row = await cursor.fetchone()
+                if not row or row[0] != auth_pass:
+                    return "UNAUTHORIZED ACTION: IDENTITY VERIFICATION FAILED."
+            
+            t_name = row[1]
             cid = payload.get("companyId")
-            qty = int(payload.get("quantity", 0))
+            
+            # NEGATIVE NUMBER GLITCH PATCH: Force integers and reject <= 0
+            try:
+                qty = int(payload.get("quantity", 0))
+                if qty <= 0:
+                    return "NICE TRY. QUANTITY MUST BE GREATER THAN ZERO."
+            except ValueError:
+                return "INVALID QUANTITY FORMAT."
             
             async with db.execute("SELECT value FROM system WHERE key = 'marketOpen'") as cursor:
                 val = str((await cursor.fetchone())[0]).lower()
                 if val not in ["true", "1", "yes"]: 
                     return "MARKET IS CURRENTLY CLOSED."
             
-            # Lookup price and company name simultaneously
             async with db.execute("SELECT price, name FROM companies WHERE id = ?", (cid,)) as cursor:
                 c_row = await cursor.fetchone()
                 if not c_row: 
                     return "COMPANY NOT FOUND."
-                cost = c_row[0] * qty
+                price = c_row[0]
                 c_name = c_row[1]
-                
-            # Lookup cash and team name simultaneously
-            async with db.execute("SELECT cash, teamName FROM teams WHERE username = ?", (username,)) as cursor:
-                t_row = await cursor.fetchone()
-                if not t_row or t_row[0] < cost: 
-                    return "INSUFFICIENT FUNDS."
-                t_name = t_row[1]
-                    
-            await db.execute("UPDATE teams SET cash = cash - ? WHERE username = ?", (cost, username))
-            await db.execute("""
-                INSERT INTO holdings (username, company_id, quantity) 
-                VALUES (?, ?, ?) 
-                ON CONFLICT(username, company_id) 
-                DO UPDATE SET quantity = quantity + ?
-            """, (username, cid, qty, qty))
-            await db.commit()
-            
-            # Broadcast the live action
-            await manager.broadcast_log(f"{t_name} bought {qty} shares of {c_name}", "trade-up")
 
-        elif action == "sell" and payload.get("username"):
-            username = payload.get("username")
-            cid = payload.get("companyId")
-            qty = int(payload.get("quantity", 0))
-            
-            async with db.execute("SELECT value FROM system WHERE key = 'marketOpen'") as cursor:
-                val = str((await cursor.fetchone())[0]).lower()
-                if val not in ["true", "1", "yes"]: 
-                    return "MARKET IS CURRENTLY CLOSED."
-                
-            async with db.execute("SELECT price, name FROM companies WHERE id = ?", (cid,)) as cursor:
-                c_row = await cursor.fetchone()
-                if not c_row: 
-                    return "COMPANY NOT FOUND."
-                proceeds = c_row[0] * qty
-                c_name = c_row[1]
-                
-            async with db.execute("SELECT quantity FROM holdings WHERE username = ? AND company_id = ?", (username, cid)) as cursor:
-                h_row = await cursor.fetchone()
-                if not h_row or h_row[0] < qty: 
-                    return "NOT ENOUGH SHARES OWNED."
-                
-            async with db.execute("SELECT teamName FROM teams WHERE username = ?", (username,)) as cursor:
-                t_name = (await cursor.fetchone())[0]
-                
-            await db.execute("UPDATE teams SET cash = cash + ? WHERE username = ?", (proceeds, username))
-            await db.execute("UPDATE holdings SET quantity = quantity - ? WHERE username = ? AND company_id = ?", (qty, username, cid))
-            await db.execute("DELETE FROM holdings WHERE quantity <= 0")
-            await db.commit()
-            
-            # Broadcast the live action
-            await manager.broadcast_log(f"{t_name} sold {qty} shares of {c_name}", "trade-down")
-            
-    # Return None if the action was successful
+            if action == "buy":
+                cost = price * qty
+                async with db.execute("SELECT cash FROM teams WHERE username = ?", (username,)) as cursor:
+                    t_cash = (await cursor.fetchone())[0]
+                    if t_cash < cost: 
+                        return "INSUFFICIENT FUNDS."
+                        
+                await db.execute("UPDATE teams SET cash = cash - ? WHERE username = ?", (cost, username))
+                await db.execute("""
+                    INSERT INTO holdings (username, company_id, quantity) 
+                    VALUES (?, ?, ?) 
+                    ON CONFLICT(username, company_id) 
+                    DO UPDATE SET quantity = quantity + ?
+                """, (username, cid, qty, qty))
+                await db.commit()
+                await manager.broadcast_log(f"{t_name} bought {qty} shares of {c_name}", "trade-up")
+
+            elif action == "sell":
+                proceeds = price * qty
+                async with db.execute("SELECT quantity FROM holdings WHERE username = ? AND company_id = ?", (username, cid)) as cursor:
+                    h_row = await cursor.fetchone()
+                    if not h_row or h_row[0] < qty: 
+                        return "NOT ENOUGH SHARES OWNED."
+                    
+                await db.execute("UPDATE teams SET cash = cash + ? WHERE username = ?", (proceeds, username))
+                await db.execute("UPDATE holdings SET quantity = quantity - ? WHERE username = ? AND company_id = ?", (qty, username, cid))
+                await db.execute("DELETE FROM holdings WHERE quantity <= 0")
+                await db.commit()
+                await manager.broadcast_log(f"{t_name} sold {qty} shares of {c_name}", "trade-down")
+
     return None
 
 @app.websocket("/ws")
