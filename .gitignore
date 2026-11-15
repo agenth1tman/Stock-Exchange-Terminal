@@ -47,3 +47,10 @@ out/
 # === Operating System Files ===
 .DS_Store
 Thumbs.db
+
+
+# === More ===
+creds.txt
+cloudflared.exe
+backup-original/
+*.rar
