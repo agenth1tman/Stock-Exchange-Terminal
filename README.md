@@ -8,7 +8,7 @@
 A real-time stock exchange simulator built to power an **interschool fintech competition**. Teams trade shares from their phones or laptops while an admin runs the market (opening and closing trading, moving prices and advancing rounds) and every screen updates live.
 
 > ### 🌐 Nothing to download for clients
-> The server delivers the trading terminal itself. Players **just open the server's address in any browser** (a phone, tablet or laptop) and sign in.
+> The server delivers the trading terminal itself. Clients **just open the server's address in any browser** (a phone, tablet or laptop) and sign in.
 
 ---
 
@@ -83,9 +83,9 @@ python server.py --reset-admin-password
 
 ---
 
-## 📱 Connecting Players
+## 📱 Connecting Clients
 
-Players only need a browser — nothing to install or download.
+Clients only need a browser — nothing to install or download.
 
 ### On the same Wi-Fi / network
 Open the **"Same Wi-Fi / network"** address the server prints (e.g. `http://192.168.1.18:8000`).
