@@ -1,0 +1,4 @@
+1: Open CMD in the folder and start the server: python server.py
+2: In a second cmd window: cloudflared tunnel --url http://localhost:8000
+3: It gives a link like https://random-words-here.trycloudflare.com
+4: Send that link to everyone. Opening it shows the terminal and it connects automatically.
