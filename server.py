@@ -11,6 +11,7 @@ import math
 import os
 import re
 import secrets
+import socket
 import sys
 import time
 from collections import deque
@@ -422,7 +423,7 @@ async def load_snapshot(include_activity: bool) -> dict:
     }
 
 
-def admin_view(snap: dict) -> dict:
+def admin_view(snap: dict, devices: list) -> dict:
     return {
         "marketOpen": snap["marketOpen"],
         "round": snap["round"],
@@ -430,7 +431,35 @@ def admin_view(snap: dict) -> dict:
         "companies": snap["companies"],
         "teams": snap["teams"],
         "activity": snap["activity"],
+        "devices": devices,
     }
+
+
+def describe_device(user_agent: str) -> str:
+    """A short label such as "iPhone · Safari" from the browser's User-Agent."""
+    ua = user_agent or ""
+    if "iPhone" in ua:
+        system = "iPhone"
+    elif "iPad" in ua:
+        system = "iPad"
+    elif "Android" in ua:
+        system = "Android phone" if "Mobile" in ua else "Android tablet"
+    elif "CrOS" in ua:
+        system = "Chromebook"
+    elif "Windows" in ua:
+        system = "Windows"
+    elif "Macintosh" in ua or "Mac OS X" in ua:
+        system = "Mac"
+    elif "Linux" in ua:
+        system = "Linux"
+    else:
+        return "Script / unknown" if ua else "Unknown device"
+    for marker, name in (("OPR/", "Opera"), ("OPT/", "Opera"), ("Edg", "Edge"), ("SamsungBrowser", "Samsung Internet"),
+                         ("CriOS", "Chrome"), ("FxiOS", "Firefox"), ("Firefox/", "Firefox"),
+                         ("Chrome/", "Chrome"), ("Safari/", "Safari")):
+        if marker in ua:
+            return f"{system} · {name}"
+    return system
 
 
 def team_view(snap: dict, username: str) -> dict | None:
@@ -463,6 +492,8 @@ class Client:
         self.id = next(Client._ids)
         self.ws = ws
         self.address = address
+        self.device = describe_device(ws.headers.get("user-agent", ""))
+        self.connected_at = time.time()
         self.role: str | None = None          # "admin", "team" or None
         self.username: str | None = None
         self.token_hash: str | None = None
@@ -498,11 +529,13 @@ class Client:
 
     def sign_in(self, role: str, username: str, token_hash: str, expires: float):
         self.role, self.username, self.token_hash, self.session_expires = role, username, token_hash, expires
+        hub.request_admin_broadcast()  # the admin Devices tab shows who is signed in where
 
     def sign_out(self):
         self.role = self.username = self.token_hash = None
         self.session_expires = 0.0
         self.pending_state = None
+        hub.request_admin_broadcast()
 
     def allow_message(self) -> bool:
         now = time.monotonic()
@@ -542,9 +575,16 @@ class Hub:
     def __init__(self):
         self.clients: set[Client] = set()
         self.dirty = asyncio.Event()
+        self.everyone_dirty = False
         self.version = 0
 
     def request_broadcast(self):
+        """The game changed: update every signed-in screen."""
+        self.everyone_dirty = True
+        self.dirty.set()
+
+    def request_admin_broadcast(self):
+        """Only the device list changed: update admin screens."""
         self.dirty.set()
 
     async def run(self):
@@ -552,10 +592,30 @@ class Hub:
             await self.dirty.wait()
             await asyncio.sleep(BROADCAST_DELAY)
             self.dirty.clear()
+            everyone, self.everyone_dirty = self.everyone_dirty, False
             try:
-                await self.broadcast_now()
+                await self.broadcast_now(None if everyone else [c for c in self.clients if c.role == "admin"])
             except Exception:
                 log.exception("Broadcast failed")
+
+    def device_list(self, snap: dict) -> list:
+        team_names = {t["username"]: t["teamName"] for t in snap["teams"]}
+        order = {"admin": 0, "team": 1, "login": 2}
+        devices = []
+        for c in self.clients:
+            if not c.alive:
+                continue
+            if c.role == "admin":
+                kind, account = "admin", "Admin"
+            elif c.role == "team":
+                kind, account = "team", team_names.get(c.username, c.username)
+            else:
+                kind, account = "login", "On Login Page"
+            devices.append({"id": c.id, "kind": kind, "account": account,
+                            "username": c.username if kind == "team" else None,
+                            "device": c.device, "address": c.address, "since": c.connected_at})
+        devices.sort(key=lambda d: (order[d["kind"]], d["account"].lower(), d["id"]))
+        return devices
 
     async def broadcast_now(self, only=None):
         pool = list(only if only is not None else self.clients)
@@ -564,13 +624,14 @@ class Hub:
         snap = await load_snapshot(include_activity=any(c.role == "admin" for c in pool))
         # No awaits from here on, so roles cannot change while we fan out.
         self.version += 1
+        devices = self.device_list(snap) if any(c.role == "admin" for c in pool) else []
         cache: dict[tuple, str | None] = {}
         for client in pool:
             if not (client.alive and client.role):
                 continue
             key = ("admin",) if client.role == "admin" else ("team", client.username)
             if key not in cache:
-                view = admin_view(snap) if client.role == "admin" else team_view(snap, client.username)
+                view = admin_view(snap, devices) if client.role == "admin" else team_view(snap, client.username)
                 cache[key] = None if view is None else json.dumps(
                     {"type": "state", "version": self.version, "state": view})
             if cache[key] is not None:
@@ -930,6 +991,29 @@ async def do_change_password(client: Client, msg: dict):
     return "ADMIN PASSWORD UPDATED. OTHER ADMIN SESSIONS WERE SIGNED OUT."
 
 
+@action("sign-out-device", role="admin")
+async def do_sign_out_device(client: Client, msg: dict):
+    device_id = clean_int(msg.get("id"), "DEVICE", 1, 10 ** 12)
+    if device_id == client.id:
+        raise UserError("THAT IS THIS DEVICE. USE LOG OUT INSTEAD.")
+    target = next((c for c in hub.clients if c.id == device_id and c.alive), None)
+    if target is None:
+        raise UserError("THAT DEVICE IS NO LONGER CONNECTED.")
+    if not target.role:
+        raise UserError("THAT DEVICE IS NOT SIGNED IN.")
+    token_hash, role, username = target.token_hash, target.role, target.username
+    async with store.transaction() as db:
+        label = "Admin"
+        if role == "team":
+            row = await fetch_one(db, "SELECT teamName FROM teams WHERE username = ?", (username,))
+            label = row["teamName"] if row else username
+        await db.execute("DELETE FROM sessions WHERE token_hash = ?", (token_hash,))
+        await record(db, "admin", f"Signed out {label} on {target.device}")
+    # Also catches a duplicated browser tab that shares the same login.
+    hub.sign_out_where(lambda c: c.token_hash == token_hash, "YOU WERE SIGNED OUT BY THE ADMIN.")
+    return f"SIGNED OUT {label.upper()} ON {target.device.upper()}."
+
+
 @action("adjust-cash", role="admin")
 async def do_adjust_cash(client: Client, msg: dict):
     username = clean_existing_username(msg.get("username"))
@@ -1019,9 +1103,11 @@ PAGE_HEADERS = {
     "X-Frame-Options": "DENY",
     "Referrer-Policy": "no-referrer",
     "Content-Security-Policy": (
-        "default-src 'self'; script-src 'self' 'unsafe-inline'; "
+        # static.cloudflareinsights.com: Cloudflare Web Analytics, which Cloudflare adds to the page itself.
+        "default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; "
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; "
-        "img-src 'self' data: https://www.google.com https://*.gstatic.com; connect-src 'self' ws: wss:; "
+        "img-src 'self' data: https://www.google.com https://*.gstatic.com; "
+        "connect-src 'self' ws: wss: https://cloudflareinsights.com; "
         "frame-ancestors 'none'; base-uri 'none'; form-action 'none'; object-src 'none'"
     ),
 }
@@ -1047,8 +1133,9 @@ async def websocket_endpoint(ws: WebSocket):
     await ws.accept()
     client = Client(ws, client_address(ws))
     hub.clients.add(client)
+    hub.request_admin_broadcast()
     writer = asyncio.create_task(client.run_writer())
-    client.send({"type": "hello"})
+    client.send({"type": "hello", "id": client.id})
     try:
         while client.alive:
             message = await ws.receive()
@@ -1083,6 +1170,7 @@ async def websocket_endpoint(ws: WebSocket):
         client.reader_done = True
         client.close()
         hub.clients.discard(client)
+        hub.request_admin_broadcast()
         writer.cancel()
         with suppress(asyncio.CancelledError, Exception):
             await writer
@@ -1111,6 +1199,57 @@ async def reset_admin_password():
     print("Admin password updated. Restart the server if it is running.")
 
 
+def keep_console_from_freezing():
+    """Clicking inside a Windows console window starts a text selection, and
+    Windows then pauses any program that prints to it - freezing the whole game.
+    Turn that click-to-select mode off for this window."""
+    if os.name != "nt":
+        return
+    try:
+        import ctypes
+        kernel32 = ctypes.windll.kernel32
+        handle = kernel32.GetStdHandle(-10)  # console input
+        mode = ctypes.c_uint32()
+        if kernel32.GetConsoleMode(handle, ctypes.byref(mode)):
+            ENABLE_QUICK_EDIT_MODE, ENABLE_EXTENDED_FLAGS = 0x40, 0x80
+            kernel32.SetConsoleMode(handle, (mode.value | ENABLE_EXTENDED_FLAGS) & ~ENABLE_QUICK_EDIT_MODE)
+    except Exception:
+        pass
+
+
+def local_network_addresses() -> list[str]:
+    """IPv4 addresses that other devices on the same Wi-Fi / network can use to reach this PC."""
+    found = []
+    with suppress(OSError):
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as probe:
+            probe.connect(("192.0.2.1", 80))  # picks the main network adapter; sends nothing
+            found.append(probe.getsockname()[0])
+    with suppress(OSError):
+        found += [info[4][0] for info in socket.getaddrinfo(socket.gethostname(), None, socket.AF_INET)]
+    usable = []
+    for address in found:
+        ip = ipaddress.ip_address(address)
+        reachable = ip.is_private or ip in ipaddress.ip_network("100.64.0.0/10")  # LAN or Tailscale
+        if reachable and not ip.is_loopback and not ip.is_link_local and address not in usable:
+            usable.append(address)
+    return usable
+
+
+def print_addresses(host: str, port: int):
+    log.info("On this PC:            http://localhost:%s", port)
+    if host in ("127.0.0.1", "localhost", "::1"):
+        log.info("(Started with --host %s, so other devices cannot connect directly.)", host)
+        return
+    addresses = local_network_addresses()
+    for address in addresses:
+        log.info("Same Wi-Fi / network:  http://%s:%s", address, port)
+    if addresses:
+        log.info("(If other devices cannot open that, allow port %s in Windows Firewall.)", port)
+    else:
+        log.info("No network connection found, so only this PC can connect directly.")
+    log.info("Anywhere else:         your Cloudflare tunnel address, e.g. https://taurusmatrix.bid")
+
+
 def main():
     parser = argparse.ArgumentParser(description="MSX stock exchange server")
     parser.add_argument("--host", default=os.environ.get("ISL_HOST", "0.0.0.0"))
@@ -1129,7 +1268,8 @@ def main():
     if args.reset_admin_password:
         asyncio.run(reset_admin_password())
         return
-    log.info("Open http://localhost:%s in a browser (or your tunnel address).", args.port)
+    keep_console_from_freezing()
+    print_addresses(args.host, args.port)
     uvicorn.run(app, host=args.host, port=args.port, ws="websockets-sansio",
                 ws_max_size=4 * MAX_MESSAGE_CHARS, ws_ping_interval=20.0, ws_ping_timeout=20.0,
                 server_header=False)

@@ -927,8 +927,164 @@
       overflow-x: auto;
     }
 
+    /* --- TOUCH SCREENS --- */
+    button,
+    select,
+    [data-action] {
+      touch-action: manipulation;
+      /* fast taps never zoom the page */
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* iPhone Safari counts the area under its toolbar in 100vh; use the visible height. */
+    @supports (height: 100dvh) {
+
+      body,
+      #app-container {
+        height: 100dvh !important;
+      }
+
+      #screen-login {
+        min-height: 100dvh !important;
+      }
+    }
+
+    /* Phones keep :hover stuck on after a tap (e.g. SELL stays red) - show the resting look. */
+    @media (hover: none) {
+      .btn-gold:hover {
+        background: var(--gold);
+      }
+
+      .tp-tab:hover {
+        color: #555566;
+      }
+
+      .tp-tab.active:hover {
+        color: #f0c000;
+      }
+
+      .tp-btn-buy:hover {
+        background: #f0c000;
+      }
+
+      .tp-btn-sell:hover {
+        background: rgba(26, 58, 143, 0.1);
+        border-color: #1a3a8f;
+        color: #7aaaff;
+      }
+
+      .tp-header-btn:hover {
+        border-color: rgba(240, 192, 0, 0.15);
+        color: #555566;
+      }
+
+      .market-btn:hover {
+        transform: none;
+      }
+
+      .admin-btn-blue:hover {
+        background: rgba(26, 58, 143, 0.1);
+      }
+
+      .admin-btn-red:hover {
+        border-color: rgba(240, 192, 0, 0.1);
+        color: #444455;
+      }
+
+      .admin-btn-gold:hover {
+        background: #f0c000;
+      }
+
+      .admin-btn-apply:hover {
+        background: transparent;
+        color: #f0c000;
+        border-color: rgba(240, 192, 0, 0.3);
+      }
+
+      .admin-btn-remove:hover {
+        background: transparent;
+        color: #cc2233;
+        border-color: rgba(204, 34, 51, 0.3);
+      }
+
+      .admin-btn-addcash:hover {
+        background: transparent;
+        color: #4caf7d;
+        border-color: rgba(76, 175, 125, 0.5);
+      }
+
+      .admin-btn-subcash:hover {
+        background: transparent;
+        color: #cc2233;
+        border-color: rgba(204, 34, 51, 0.5);
+      }
+
+      .tx-eye-btn:hover {
+        color: #555566 !important;
+      }
+
+      .tx-eye-btn.is-visible:hover {
+        color: #f0c000 !important;
+      }
+
+      .live-badge:hover,
+      .live-badge.is-offline:hover {
+        background: transparent;
+      }
+
+      .sys-version:hover {
+        color: #555566 !important;
+      }
+
+      .ee-btn:hover {
+        background: transparent;
+        color: #f0c000;
+        box-shadow: none;
+      }
+    }
+
     /* --- NARROW SCREENS (phones / small tablets) --- */
     @media (max-width: 860px) {
+
+      /* The whole page scrolls (header, ticker and all) so content gets the
+         screen; only the tab bar stays pinned at the top. */
+      #screen-admin,
+      #screen-dashboard,
+      #admin-shell,
+      #tp-shell {
+        height: auto !important;
+        min-height: 100%;
+        overflow: visible !important;
+      }
+
+      .view-body {
+        flex: none !important;
+        overflow: visible !important;
+        padding: 16px !important;
+      }
+
+      .tab-row {
+        position: sticky !important;
+        top: 0;
+        z-index: 30 !important;
+        background: var(--bg-dark);
+        padding: 0 8px !important;
+        overflow-x: auto;
+      }
+
+      .tab-row .tp-tab {
+        padding: 12px 14px !important;
+        flex-shrink: 0;
+      }
+
+      .tab-row {
+        scrollbar-width: none;
+      }
+
+      .tab-row::-webkit-scrollbar {
+        display: none;
+      }
+
       .hdr {
         flex-wrap: wrap;
         gap: 10px;
@@ -946,17 +1102,17 @@
         width: 100%;
       }
 
-      .tab-row {
-        padding: 0 8px !important;
-        overflow-x: auto;
+      .hdr-center>span {
+        font-size: 15px !important;
+        letter-spacing: 0.15em !important;
       }
 
-      .tab-row .tp-tab {
-        padding: 12px 14px !important;
-        flex-shrink: 0;
+      .live-badge,
+      .tp-header-btn {
+        padding: 6px 12px;
       }
 
-      .view-body {
+      .login-header {
         padding: 16px !important;
       }
 
@@ -972,22 +1128,195 @@
         width: 100% !important;
       }
 
-      .resp-wrap {
-        flex-wrap: wrap;
-      }
-
-      .resp-wrap>* {
-        flex: 1 1 calc(50% - 16px) !important;
-        min-width: 140px;
-      }
-
       .resp-minh {
         min-height: 320px;
       }
 
+      /* Stat cards: 2 x 2 instead of one per row (3 across for the admin's small numbers). */
+      .resp-wrap {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      #ao-stats {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      #ao-stats>div {
+        padding: 12px 14px !important;
+      }
+
+      .tp-card {
+        padding: 12px 14px;
+      }
+
+      .tp-val {
+        font-size: 18px;
+      }
+
+      /* iPhones zoom the whole page when an input's text is under 16px. */
+      input,
+      select,
+      textarea {
+        font-size: 16px !important;
+      }
+
+      #td-trade {
+        scroll-margin-top: 64px;
+      }
+
+      #td-holdings {
+        max-height: none !important;
+      }
+
       .tp-table th,
       .tp-table td {
-        padding: 10px 12px;
+        padding: 10px 8px;
+      }
+
+      .tp-table th {
+        letter-spacing: 0.15em;
+      }
+
+      .tp-table td:not(:first-child) {
+        white-space: nowrap;
+      }
+
+      /* Leaderboard: team names wrap so equity and gain stay on screen. */
+      .lb-table td:nth-child(2) {
+        white-space: normal;
+      }
+
+      .lb-table th,
+      .lb-table td {
+        padding: 10px 5px;
+      }
+
+      .lb-table th:first-child,
+      .lb-table td:first-child {
+        padding-left: 12px;
+      }
+
+      .lb-table th:last-child,
+      .lb-table td:last-child {
+        padding-right: 12px;
+      }
+
+      .adm-table th,
+      .adm-table td {
+        padding: 12px 8px !important;
+      }
+
+      /* Less important columns make room for the ones that decide the ranking. */
+      .col-minor {
+        display: none !important;
+      }
+
+      /* Admin tables with buttons: each row becomes a compact card. */
+      .stack-table thead {
+        display: none;
+      }
+
+      .stack-table,
+      .stack-table tbody {
+        display: block;
+        width: 100%;
+      }
+
+      .stack-table tr {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        gap: 8px 14px;
+        padding: 14px 16px;
+      }
+
+      .stack-table td {
+        display: block;
+        padding: 0 !important;
+        text-align: left !important;
+      }
+
+      .stack-table td[colspan] {
+        flex: 1 1 100%;
+        padding: 20px 0 !important;
+        text-align: center !important;
+      }
+
+      .stack-table td[data-label]::before {
+        content: attr(data-label);
+        display: block;
+        margin-bottom: 3px;
+        font-size: 8px;
+        color: #555566;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+      }
+
+      .stack-table .c-main {
+        order: 1;
+        flex: 1 1 auto;
+        min-width: 0;
+        align-self: center;
+      }
+
+      .stack-table .c-side {
+        order: 2;
+        flex: 0 0 auto;
+        text-align: right !important;
+      }
+
+      .stack-table .c-sub {
+        order: 3;
+        flex: 1 1 100%;
+        margin-top: -6px;
+      }
+
+      .stack-table .c-stat {
+        order: 4;
+        flex: 0 0 auto;
+      }
+
+      .stack-table .c-input {
+        order: 4;
+        flex: 1 1 120px;
+      }
+
+      .stack-table .c-input input {
+        width: 100% !important;
+        box-sizing: border-box;
+        text-align: left !important;
+      }
+
+      .stack-table .c-actions {
+        order: 5;
+        flex: 1 1 auto;
+      }
+
+      .stack-table .c-input~.c-actions {
+        align-self: center;
+      }
+
+      .ee-modal {
+        width: calc(100vw - 32px);
+        max-width: 440px;
+      }
+
+      .ee-inner {
+        padding: 28px 20px;
+      }
+
+      .market-banner {
+        height: 110px;
+      }
+
+      .market-content {
+        gap: 16px;
+      }
+
+      .market-content svg {
+        width: 56px;
+        height: 56px;
       }
 
       #floating-panel {
@@ -1042,7 +1371,7 @@
         <div class="grid-bg"></div>
 
         <!-- Top Header -->
-        <header
+        <header class="login-header"
           style="position: absolute; top: 0; left: 0; right: 0; display: flex; justify-content: space-between; padding: 16px 32px; z-index: 10;">
           <div style="display: flex; align-items: center; gap: 12px;">
             <div
@@ -1157,6 +1486,7 @@
       var PING_EVERY = 20000;
       var PONG_TIMEOUT = 10000;
       var REQUEST_TIMEOUT = 15000;
+      var HANDSHAKE_TIMEOUT = 12000;
 
       // --- HELPERS ---
       function $(id) { return document.getElementById(id); }
@@ -1197,6 +1527,10 @@
       var pingTimer = null;
       var pongTimer = null;
       var helloTimer = null;
+      var myConnId = null;      // this browser's connection number, from the server's hello
+      var failStreak = 0;       // connection attempts that failed in a row
+      var diagnosis = "";       // "", "down" or "blocked" - see DIAGNOSES
+      var diagnosing = false;
 
       var role = null;         // only ever set by the server's "auth" message
       var gameState = null;     // the latest state the server sent for this role
@@ -1211,14 +1545,33 @@
         return { adminTab: "overview", teamTab: "dashboard", selectedCompanyId: null, revealed: {}, tradeBusy: false };
       }
 
+      // Shown after repeated failures, once the page has worked out why.
+      var DIAGNOSES = {
+        down: {
+          title: "SERVER OFFLINE",
+          detail: "The server isn't responding. Check that server.py is running and the PC is online · retrying",
+          banner: "SERVER OFFLINE · RETRYING..."
+        },
+        blocked: {
+          title: "CONNECTION BLOCKED",
+          detail: "The server is up, but something in this browser is blocking the live connection. Turn off any VPN (e.g. Opera's), ad blocker or antivirus web shield for this site, or try another browser · retrying",
+          banner: "LIVE CONNECTION BLOCKED · TURN OFF VPN / AD BLOCKER / ANTIVIRUS WEB SHIELD FOR THIS SITE"
+        }
+      };
+
       // --- CONNECTION STATUS STRIP ---
       function setConn(state) {
         connState = state;
         var iconDiv = $("status-icon"), textDiv = $("status-text"), subTextDiv = $("status-subtext");
         var address = activeUrl || "server";
+        var problem = state !== "connected" && DIAGNOSES[diagnosis];
         if (iconDiv && textDiv && subTextDiv) {
           iconDiv.innerHTML = STATUS_ICONS[state] || STATUS_ICONS.offline;
-          if (state === "connecting") {
+          if (problem) {
+            textDiv.textContent = problem.title;
+            textDiv.style.color = "var(--loss)";
+            subTextDiv.textContent = problem.detail;
+          } else if (state === "connecting") {
             textDiv.textContent = "CONNECTING";
             textDiv.style.color = "var(--gold)";
             subTextDiv.textContent = "Reaching " + address + "...";
@@ -1291,6 +1644,8 @@
         candidates = urls.filter(function (u, i) { return u && urls.indexOf(u) === i; });
         candidateIdx = 0;
         reconnectDelay = 500;
+        failStreak = 0;
+        diagnosis = "";
         openSocket();
       }
 
@@ -1309,19 +1664,19 @@
           return;
         }
         ws = sock;
-        sock.onopen = function () {
-          if (ws !== sock) return;
-          // Only trust the socket once our own server greets us (some other
-          // dev server could also be listening on /ws).
-          clearTimeout(helloTimer);
-          helloTimer = setTimeout(function () { if (ws === sock) onSocketFailed(false); }, 6000);
-        };
+        // Give up on an attempt that hasn't been greeted by our server in time -
+        // whether the handshake stalled somewhere or something else answered on /ws.
+        clearTimeout(helloTimer);
+        helloTimer = setTimeout(function () { if (ws === sock) onSocketFailed(false); }, HANDSHAKE_TIMEOUT);
         sock.onmessage = function (event) { if (ws === sock) onServerMessage(event.data); };
         sock.onclose = function () { if (ws === sock) onSocketFailed(connState === "connected"); };
       }
 
-      function onHello() {
+      function onHello(msg) {
         clearTimeout(helloTimer);
+        myConnId = msg.id;
+        failStreak = 0;
+        diagnosis = "";
         candidates = [activeUrl];
         candidateIdx = 0;
         reconnectDelay = 500;
@@ -1353,6 +1708,22 @@
         reconnectDelay = Math.min(reconnectDelay * 2, 8000);
         clearTimeout(reconnectTimer);
         reconnectTimer = setTimeout(openSocket, delay);
+        failStreak++;
+        if (failStreak % 3 === 0) diagnose();
+      }
+
+      // After repeated failures, ask the server a plain web request (the kind that
+      // loaded this page). If that works, the server is up and something between
+      // this browser and the server is blocking only the live connection.
+      function diagnose() {
+        if (diagnosing || activeUrl !== defaultSocketUrl() || !window.fetch) return;
+        diagnosing = true;
+        fetch("/healthz", { cache: "no-store" }).then(function (res) { return res.ok; }, function () { return false; }).then(function (serverUp) {
+          diagnosing = false;
+          if (connState === "connected") return;
+          diagnosis = serverUp ? "blocked" : "down";
+          setConn(connState);
+        });
       }
 
       // Keep the connection alive through Cloudflare and notice dead ones quickly.
@@ -1430,7 +1801,7 @@
         var msg;
         try { msg = JSON.parse(raw); } catch (e) { return; }
         if (!msg || typeof msg !== "object") return;
-        if (msg.type === "hello") onHello();
+        if (msg.type === "hello") onHello(msg);
         else if (msg.type === "result") settle(msg.reqId, msg);
         else if (msg.type === "auth") onAuth(msg);
         else if (msg.type === "state") onState(msg);
@@ -1684,7 +2055,7 @@
         var banner = $("conn-banner");
         var showBanner = !!view && connState !== "connected";
         banner.classList.toggle("show", showBanner);
-        banner.textContent = showBanner ? "CONNECTION LOST · RECONNECTING TO SERVER..." : "";
+        banner.textContent = showBanner ? (DIAGNOSES[diagnosis] ? DIAGNOSES[diagnosis].banner : "CONNECTION LOST · RECONNECTING TO SERVER...") : "";
       }
 
       // --- SHARED VIEW PIECES ---
@@ -1760,9 +2131,10 @@
           '<span style="font-size:10px; color:' + textColor + '; letter-spacing:0.3em; text-transform:uppercase; font-weight:600;">' + title + '</span></div>';
       }
 
-      function headCells(labels) {
+      // minor: indexes of columns that phones hide to make room.
+      function headCells(labels, minor) {
         return labels.map(function (h, i) {
-          return '<th style="padding:10px 20px; font-size:9px; color:#555566; letter-spacing:0.3em; text-transform:uppercase; font-weight:600; text-align:' + (i <= 1 ? 'left' : 'right') + ';">' + h + '</th>';
+          return '<th' + (minor && minor.indexOf(i) >= 0 ? ' class="col-minor"' : '') + ' style="padding:10px 20px; font-size:9px; color:#555566; letter-spacing:0.3em; text-transform:uppercase; font-weight:600; text-align:' + (i <= 1 ? 'left' : 'right') + ';">' + h + '</th>';
         }).join('');
       }
 
@@ -1789,7 +2161,7 @@
       }
 
       // --- ADMIN CONSOLE ---
-      var ADMIN_TABS = [["overview", "Overview"], ["companies", "Companies"], ["teams", "Teams"], ["leaderboard", "Leaderboard"], ["settings", "Settings"]];
+      var ADMIN_TABS = [["overview", "Overview"], ["companies", "Companies"], ["teams", "Teams"], ["devices", "Devices"], ["leaderboard", "Leaderboard"], ["settings", "Settings"]];
       var DOT_COLORS = { market: "#f0c000", round: "#7aaaff", "trade-up": "#4caf7d", "trade-down": "#cc2233" };
 
       function buildAdminUI(container) {
@@ -1801,6 +2173,7 @@
         var body = $("admin-body");
         if (local.adminTab === "companies") adminCompanies(body, s);
         else if (local.adminTab === "teams") adminTeams(body, s);
+        else if (local.adminTab === "devices") adminDevices(body, s);
         else if (local.adminTab === "leaderboard") adminLeaderboard(body, s);
         else if (local.adminTab === "settings") adminSettings(body, s);
         else adminOverview(body, s);
@@ -1884,7 +2257,7 @@
         ensureBody(body, "companies",
           '<div style="display:flex; flex-direction:column; gap:16px;">' +
           '<div style="' + PANEL_STYLE + '">' + panelHead("Listed Companies", "#f0c000", "#f0c000") +
-          '<div class="tbl-scroll"><table style="width:100%; border-collapse:collapse;"><thead><tr style="border-bottom:1px solid rgba(240,192,0,0.06);">' +
+          '<div class="tbl-scroll"><table class="stack-table" style="width:100%; border-collapse:collapse;"><thead><tr style="border-bottom:1px solid rgba(240,192,0,0.06);">' +
           headCells(['Company', 'Industry', 'Price', 'Price Modifier (+/-)', '']) +
           '</tr></thead><tbody id="ac-rows"></tbody></table></div>' +
           '</div>' +
@@ -1902,11 +2275,11 @@
           var pct = pctChange(c);
           var isUp = pct >= 0;
           return '<tr style="border-bottom:1px solid rgba(240,192,0,0.04);">' +
-            '<td style="padding:14px 20px;"><p style="font-size:13px; font-weight:bold; color:#f5f0e8; margin:0;">' + esc(c.name) + '</p></td>' +
-            '<td style="padding:14px 20px;"><p style="font-size:11px; color:#555566; margin:0;">' + esc(c.industry) + '</p></td>' +
-            '<td style="padding:14px 20px; text-align:right;"><div style="display:flex; align-items:center; justify-content:flex-end; gap:8px;"><span style="font-size:13px; font-weight:600; color:#f0c000;">$' + fmt(c.price) + '</span><span style="font-size:10px; font-weight:600; color:' + (isUp ? '#4caf7d' : '#cc2233') + ';">' + (isUp ? '+' : '') + pct.toFixed(1) + '%</span></div></td>' +
-            '<td style="padding:14px 20px; text-align:right;"><input id="price-edit-' + esc(c.id) + '" type="text" inputmode="decimal" placeholder="e.g. 20 or -20" data-enter="apply-price" data-id="' + esc(c.id) + '" style="' + INPUT_STYLE + ' width:140px; text-align:right;" /></td>' +
-            '<td style="padding:14px 20px; text-align:right;"><div style="display:flex; justify-content:flex-end; gap:12px;"><button data-action="apply-price" data-id="' + esc(c.id) + '" class="admin-btn-apply" style="font-family:inherit;">APPLY</button><button data-action="delete-company" data-id="' + esc(c.id) + '" class="admin-btn-remove" style="font-family:inherit;">REMOVE</button></div></td>' +
+            '<td class="c-main" style="padding:14px 20px;"><p style="font-size:13px; font-weight:bold; color:#f5f0e8; margin:0;">' + esc(c.name) + '</p></td>' +
+            '<td class="c-sub" style="padding:14px 20px;"><p style="font-size:11px; color:#555566; margin:0;">' + esc(c.industry) + '</p></td>' +
+            '<td class="c-side" style="padding:14px 20px; text-align:right;"><div style="display:flex; align-items:center; justify-content:flex-end; gap:8px;"><span style="font-size:13px; font-weight:600; color:#f0c000;">$' + fmt(c.price) + '</span><span style="font-size:10px; font-weight:600; color:' + (isUp ? '#4caf7d' : '#cc2233') + ';">' + (isUp ? '+' : '') + pct.toFixed(1) + '%</span></div></td>' +
+            '<td class="c-input" style="padding:14px 20px; text-align:right;"><input id="price-edit-' + esc(c.id) + '" type="text" autocomplete="off" placeholder="+20 / -20" data-enter="apply-price" data-id="' + esc(c.id) + '" style="' + INPUT_STYLE + ' width:140px; text-align:right;" /></td>' +
+            '<td class="c-actions" style="padding:14px 20px; text-align:right;"><div style="display:flex; justify-content:flex-end; gap:12px;"><button data-action="apply-price" data-id="' + esc(c.id) + '" class="admin-btn-apply" style="font-family:inherit;">APPLY</button><button data-action="delete-company" data-id="' + esc(c.id) + '" class="admin-btn-remove" style="font-family:inherit;">REMOVE</button></div></td>' +
             '</tr>';
         }).join("") : emptyRow(5, "NO COMPANIES LISTED"));
       }
@@ -1915,7 +2288,7 @@
         ensureBody(body, "teams",
           '<div style="display:flex; flex-direction:column; gap:16px;">' +
           '<div style="' + PANEL_STYLE + '">' + panelHead("Registered Teams", "#f0c000", "#f0c000") +
-          '<div class="tbl-scroll"><table style="width:100%; border-collapse:collapse;"><thead><tr style="border-bottom:1px solid rgba(240,192,0,0.06);">' +
+          '<div class="tbl-scroll"><table class="stack-table" style="width:100%; border-collapse:collapse;"><thead><tr style="border-bottom:1px solid rgba(240,192,0,0.06);">' +
           headCells(['Team', 'Username', 'Cash', 'Portfolio', 'Total Equity', '']) +
           '</tr></thead><tbody id="at-rows"></tbody></table></div>' +
           '</div>' +
@@ -1931,12 +2304,12 @@
 
         patch($("at-rows"), s.teams.length ? s.teams.map(function (t) {
           return '<tr style="border-bottom:1px solid rgba(240,192,0,0.04);">' +
-            '<td style="padding:14px 20px;"><p style="font-size:13px; font-weight:bold; color:#f5f0e8; margin:0;">' + esc(t.teamName) + '</p></td>' +
-            '<td style="padding:14px 20px;"><p style="font-size:12px; color:#555566; margin:0;">' + esc(t.username) + '</p></td>' +
-            '<td style="padding:14px 20px; text-align:right;"><span style="font-size:12px; color:#aaaaaa;">$' + fmt(t.cash) + '</span></td>' +
-            '<td style="padding:14px 20px; text-align:right;"><span style="font-size:12px; color:#aaaaaa;">$' + fmt(t.portfolio) + '</span></td>' +
-            '<td style="padding:14px 20px; text-align:right;"><span style="font-size:13px; font-weight:bold; color:#f5f0e8;">$' + fmt(t.equity) + '</span></td>' +
-            '<td style="padding:14px 20px; text-align:right;"><div style="display:flex; justify-content:flex-end; gap:12px;">' +
+            '<td class="c-main" style="padding:14px 20px;"><p style="font-size:13px; font-weight:bold; color:#f5f0e8; margin:0;">' + esc(t.teamName) + '</p></td>' +
+            '<td class="c-sub" style="padding:14px 20px;"><p style="font-size:12px; color:#555566; margin:0;">' + esc(t.username) + '</p></td>' +
+            '<td class="c-stat" data-label="Cash" style="padding:14px 20px; text-align:right;"><span style="font-size:12px; color:#aaaaaa;">$' + fmt(t.cash) + '</span></td>' +
+            '<td class="c-stat" data-label="Portfolio" style="padding:14px 20px; text-align:right;"><span style="font-size:12px; color:#aaaaaa;">$' + fmt(t.portfolio) + '</span></td>' +
+            '<td class="c-side" style="padding:14px 20px; text-align:right;"><span style="font-size:13px; font-weight:bold; color:#f5f0e8;">$' + fmt(t.equity) + '</span></td>' +
+            '<td class="c-actions" style="padding:14px 20px; text-align:right;"><div style="display:flex; justify-content:flex-end; gap:12px;">' +
             '<button data-action="reset-team-password" data-id="' + esc(t.username) + '" class="admin-btn-apply" style="font-family:inherit; white-space:nowrap;">RESET PW</button>' +
             '<button data-action="delete-team" data-id="' + esc(t.username) + '" class="admin-btn-remove" style="font-family:inherit;">REMOVE</button>' +
             '</div></td>' +
@@ -1944,12 +2317,67 @@
         }).join("") : emptyRow(6, "NO TEAMS YET"));
       }
 
+      var KIND_COLORS = { admin: "#f0c000", team: "#4caf7d", login: "#555566" };
+
+      function adminDevices(body, s) {
+        ensureBody(body, "devices",
+          '<div style="display:flex; flex-direction:column; gap:16px;">' +
+          '<div id="ad-stats" class="resp-wrap" style="display:flex; gap:12px;"></div>' +
+          '<div style="' + PANEL_STYLE + '">' + panelHead("Connected Devices", "#f0c000", "#f0c000") +
+          '<div class="tbl-scroll"><table class="stack-table" style="width:100%; border-collapse:collapse;"><thead><tr style="border-bottom:1px solid rgba(240,192,0,0.06);">' +
+          headCells(['Device', 'Signed In As', 'Address', 'Connected Since', '']) +
+          '</tr></thead><tbody id="ad-rows"></tbody></table></div>' +
+          '</div>' +
+          '<div style="' + PANEL_STYLE + '">' + panelHead("Teams With No Device Online", "#cc2233", "#cc2233") +
+          '<div id="ad-missing" style="padding:16px 20px; display:flex; flex-wrap:wrap; gap:8px;"></div>' +
+          '</div>' +
+          '</div>');
+
+        var devices = s.devices || [];
+        var online = {};
+        devices.forEach(function (d) { if (d.kind === "team") online[d.username] = true; });
+        var count = function (kind) { return devices.filter(function (d) { return d.kind === kind; }).length; };
+        var teamsOnline = s.teams.filter(function (t) { return online[t.username]; }).length;
+
+        patch($("ad-stats"),
+          statBox("Devices", devices.length, "connected now") +
+          statBox("Teams Online", teamsOnline + '<span style="font-size:14px; color:#555566;"> / ' + s.teams.length + '</span>', "with a device signed in") +
+          statBox("Admin Screens", count("admin"), "signed in as admin") +
+          statBox("Login Page", count("login"), "not signed in yet"));
+
+        patch($("ad-rows"), devices.length ? devices.map(function (d) {
+          var mine = d.id === myConnId;
+          var since = new Date(d.since * 1000).toLocaleTimeString("en-US", { hour12: false });
+          return '<tr style="border-bottom:1px solid rgba(240,192,0,0.04);' + (mine ? ' background:rgba(240,192,0,0.03);' : '') + '">' +
+            '<td class="c-main" style="padding:14px 20px;"><div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">' +
+            '<p style="font-size:13px; font-weight:bold; color:#f5f0e8; margin:0;">' + esc(d.device) + '</p>' +
+            (mine ? '<span style="font-size:9px; color:#f0c000; border:1px solid rgba(240,192,0,0.3); padding:2px 6px; letter-spacing:0.1em; white-space:nowrap;">THIS DEVICE</span>' : '') +
+            '</div></td>' +
+            '<td class="c-sub" style="padding:14px 20px;"><div style="display:flex; align-items:center; gap:8px;">' +
+            '<span style="width:6px; height:6px; border-radius:50%; background:' + (KIND_COLORS[d.kind] || '#555566') + '; flex-shrink:0;"></span>' +
+            '<span style="font-size:12px; font-weight:600; color:' + (d.kind === 'login' ? '#555566' : '#f5f0e8') + ';">' + esc(d.account) + '</span>' +
+            (d.username ? '<span style="font-size:11px; color:#555566;">@' + esc(d.username) + '</span>' : '') +
+            '</div></td>' +
+            '<td class="c-stat" data-label="Address" style="padding:14px 20px; text-align:right;"><span style="font-size:12px; color:#aaaaaa;">' + esc(d.address) + '</span></td>' +
+            '<td class="c-side" style="padding:14px 20px; text-align:right;"><span style="font-size:12px; color:#aaaaaa;">' + esc(since) + '</span></td>' +
+            '<td class="c-actions" style="padding:14px 20px; text-align:right;">' +
+            (d.kind !== 'login' && !mine ? '<div style="display:flex; justify-content:flex-end;"><button data-action="sign-out-device" data-id="' + d.id + '" class="admin-btn-remove" style="font-family:inherit; white-space:nowrap;">SIGN OUT</button></div>' : '') +
+            '</td>' +
+            '</tr>';
+        }).join("") : emptyRow(5, "NO DEVICES CONNECTED"));
+
+        var missing = s.teams.filter(function (t) { return !online[t.username]; });
+        patch($("ad-missing"), missing.length ? missing.map(function (t) {
+          return '<span style="border:1px solid rgba(204,34,51,0.3); padding:6px 10px; font-size:11px; color:#c8c8cc;">' + esc(t.teamName) + ' <span style="color:#555566;">@' + esc(t.username) + '</span></span>';
+        }).join("") : '<span style="font-size:11px; color:#4caf7d; letter-spacing:0.2em;">' + (s.teams.length ? 'EVERY TEAM HAS A DEVICE ONLINE' : 'NO TEAMS YET') + '</span>');
+      }
+
       function adminLeaderboard(body, s) {
         ensureBody(body, "leaderboard",
           '<div style="' + PANEL_STYLE + '">' +
           '<div id="al-head"></div>' +
-          '<div class="tbl-scroll"><table style="width:100%; border-collapse:collapse;"><thead><tr style="border-bottom:1px solid rgba(240,192,0,0.06);">' +
-          headCells(['Rank', 'Team', 'Cash', 'Portfolio', 'Total Equity', 'Gain / Loss']) +
+          '<div class="tbl-scroll"><table class="adm-table" style="width:100%; border-collapse:collapse;"><thead><tr style="border-bottom:1px solid rgba(240,192,0,0.06);">' +
+          headCells(['Rank', 'Team', 'Cash', 'Portfolio', 'Total Equity', 'Gain / Loss'], [2, 3]) +
           '</tr></thead><tbody id="al-rows"></tbody></table></div>' +
           '</div>');
 
@@ -1960,8 +2388,8 @@
           return '<tr style="border-bottom:1px solid rgba(240,192,0,0.04); ' + (i === 0 ? 'background:rgba(240,192,0,0.03);' : '') + '">' +
             '<td style="padding:16px 20px; text-align:left;"><span style="font-size:13px; font-weight:900; color:' + (i === 0 ? '#f0c000' : '#555566') + ';">' + String(i + 1).padStart(2, '0') + '</span></td>' +
             '<td style="padding:16px 20px; text-align:left;"><span style="font-size:12px; font-weight:bold; color:' + (i === 0 ? '#f0c000' : '#f5f0e8') + ';">' + esc(t.teamName) + '</span></td>' +
-            '<td style="padding:16px 20px; text-align:right;"><span style="font-size:12px; color:#aaaaaa;">$' + fmt(t.cash) + '</span></td>' +
-            '<td style="padding:16px 20px; text-align:right;"><span style="font-size:12px; color:#aaaaaa;">$' + fmt(t.portfolio) + '</span></td>' +
+            '<td class="col-minor" style="padding:16px 20px; text-align:right;"><span style="font-size:12px; color:#aaaaaa;">$' + fmt(t.cash) + '</span></td>' +
+            '<td class="col-minor" style="padding:16px 20px; text-align:right;"><span style="font-size:12px; color:#aaaaaa;">$' + fmt(t.portfolio) + '</span></td>' +
             '<td style="padding:16px 20px; text-align:right;"><span style="font-size:13px; font-weight:bold; color:#f5f0e8;">$' + fmt(t.equity) + '</span></td>' +
             '<td style="padding:16px 20px; text-align:right;"><span style="font-size:12px; font-weight:600; color:' + (gain >= 0 ? '#4caf7d' : '#cc2233') + ';">' + gainText(gain) + '</span></td>' +
             '</tr>';
@@ -2093,6 +2521,13 @@
         });
       }
 
+      function signOutDevice(btn, id) {
+        var device = (gameState.devices || []).find(function (d) { return String(d.id) === String(id); });
+        var name = device ? device.account + " on " + device.device : "this device";
+        if (!window.confirm("Sign out " + name + "? It goes back to the login page and has to sign in again.")) return;
+        runAdmin(btn, "sign-out-device", { id: Number(id) });
+      }
+
       function adjustCash(btn, isAdding) {
         var username = fieldValue("adjust-cash-team");
         var raw = fieldValue("adjust-cash-amount");
@@ -2136,7 +2571,7 @@
         '<div class="tbl-scroll"><table class="tp-table"><thead><tr><th>COMPANY</th><th>PRICE</th><th>CHANGE</th><th>OWNED</th></tr></thead><tbody id="td-market"></tbody></table></div>' +
         '</div>' +
         '<div class="resp-stack" style="display:flex; gap:16px;">' +
-        '<div class="resp-full" style="width:380px; flex-shrink:0; ' + PANEL_STYLE + '">' +
+        '<div id="td-trade" class="resp-full" style="width:380px; flex-shrink:0; ' + PANEL_STYLE + '">' +
         '<div class="tp-table-head" style="border-bottom:1px solid rgba(240,192,0,0.08);"><div style="width:4px; height:16px; background:#1a3a8f;"></div><span style="font-size:10px; color:#7aaaff; letter-spacing:0.3em; text-transform:uppercase; font-weight:600;">TRADE</span></div>' +
         '<div style="padding:20px; display:flex; flex-direction:column; gap:16px;">' +
         '<div>' +
@@ -2258,7 +2693,7 @@
         ensureBody(body, "leaderboard",
           '<div class="td-wrap" style="padding:32px; max-width:1600px; margin:0 auto; width:100%; box-sizing:border-box;"><div class="tp-table-wrap">' +
           '<div id="tl-head" class="tp-table-head"></div>' +
-          '<div class="tbl-scroll"><table class="tp-table"><thead><tr><th style="text-align:left;">RANK</th><th style="text-align:left;">TEAM</th><th>CASH</th><th>PORTFOLIO</th><th>TOTAL EQUITY</th><th>GAIN / LOSS</th></tr></thead><tbody id="tl-rows"></tbody></table></div>' +
+          '<div class="tbl-scroll"><table class="tp-table lb-table"><thead><tr><th style="text-align:left;">RANK</th><th style="text-align:left;">TEAM</th><th class="col-minor">CASH</th><th class="col-minor">PORTFOLIO</th><th>TOTAL EQUITY</th><th>GAIN / LOSS</th></tr></thead><tbody id="tl-rows"></tbody></table></div>' +
           '</div></div>');
 
         patch($("tl-head"), '<div style="width:4px; height:16px; background:#f0c000;"></div><span style="font-size:10px; color:#f0c000; letter-spacing:0.3em; text-transform:uppercase; font-weight:600;">LEADERBOARD &middot; ROUND ' + s.round + '</span>');
@@ -2272,8 +2707,8 @@
             '<span style="font-size:13px; font-weight:bold; color:' + (t.me ? '#f0c000' : '#f5f0e8') + ';">' + esc(t.teamName) + '</span>' +
             (t.me ? '<span style="font-size:9px; color:#f0c000; border:1px solid rgba(240,192,0,0.3); padding:2px 6px; letter-spacing:0.1em;">YOU</span>' : '') +
             '</div></td>' +
-            '<td><span style="font-size:13px; color:#aaaaaa;">$' + fmt(t.cash) + '</span></td>' +
-            '<td><span style="font-size:13px; color:#aaaaaa;">$' + fmt(t.portfolio) + '</span></td>' +
+            '<td class="col-minor"><span style="font-size:13px; color:#aaaaaa;">$' + fmt(t.cash) + '</span></td>' +
+            '<td class="col-minor"><span style="font-size:13px; color:#aaaaaa;">$' + fmt(t.portfolio) + '</span></td>' +
             '<td><span style="font-size:14px; font-weight:bold; color:#f5f0e8;">$' + fmt(t.equity) + '</span></td>' +
             '<td><span style="font-size:13px; font-weight:600; color:' + color + ';">' + gainText(gain) + '</span></td>' +
             '</tr>';
@@ -2327,7 +2762,13 @@
 
         // Team
         "set-team-tab": function (btn) { local.teamTab = btn.getAttribute("data-tab"); render(); },
-        "select-company-row": function (row, id) { local.selectedCompanyId = id; render(); },
+        "select-company-row": function (row, id) {
+          local.selectedCompanyId = id;
+          render();
+          // On phones the trade panel is far below the list, so bring it into view.
+          var panel = $("td-trade");
+          if (panel && window.matchMedia("(max-width: 860px)").matches) panel.scrollIntoView({ behavior: "smooth", block: "start" });
+        },
         "buy": function () { trade("buy"); },
         "sell": function () { trade("sell"); },
 
@@ -2341,6 +2782,7 @@
         "add-company": addCompany,
         "delete-team": deleteTeam,
         "reset-team-password": resetTeamPassword,
+        "sign-out-device": signOutDevice,
         "add-team": addTeam,
         "change-admin-password": changeAdminPassword,
         "add-cash": function (btn) { adjustCash(btn, true); },
