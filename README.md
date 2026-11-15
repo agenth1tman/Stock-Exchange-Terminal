@@ -1,12 +1,6 @@
 
 # Stock Exchange Terminal (Simulator) 📈
 
-[![Python](https://img.shields.io/badge/Python-3.10-blue.svg)](https://www.python.org/)
-[![License: GPL v3](https://img.shields.io/badge/License-GPL_v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![Release](https://img.shields.io/badge/Release-v1.2.0--stable-orange.svg)]()
-
-An asynchronous, high-performance stock exchange simulator built to power an **interschool fintech competition**. The engine mimics real-world exchange environments, combining a rapid asynchronous backend with a highly responsive, minimal, and beautifully animated frontend dashboard.
-
 ---
 [![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://www.python.org/)
 [![License: GPL v3](https://img.shields.io/badge/License-GPL_v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
