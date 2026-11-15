@@ -29,7 +29,7 @@ An asynchronous, high-performance stock exchange simulator built to power an **i
 Follow these steps to spin up the exchange terminal locally on your machine.
 
 ### Prerequisites
-Make sure you have **Python 3.9 or higher** installed.
+Make sure you have **Python 3.10 or higher** installed.
 
 ### 1. Clone the Repository
 ```bash
@@ -54,21 +54,15 @@ source venv/bin/activate
 
 ### 3. Install Dependencies
 
-Ensure you have python installed and the following dependencies:
+Ensure you have python installed and run the following command to install all required dependencies:
 ```bash
-aiosqlite
-fastapi
-uvicorn[standard]
-websockets
+pip install -r requirements.txt
 ```
 
 ### 4. Run the Engine
 
-Run the "run.cmd" to run the server.
-
-Open your browser and connect to your local ip to access the terminal dashboard.
-
-Admin Username is "admin" and initial password is "7fedfb67".
+Run run.cmd (or python server.py), then open http://localhost:8000 in a browser. Other devices on the same network can use http://<your-ip>:8000.
+On first start the server creates a random admin password and prints it in the console. Write it down. Username is admin. To choose a new one later, stop the server and run python server.py --reset-admin-password.
 
 ---
 
