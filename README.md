@@ -1,14 +1,13 @@
 
 # Stock Exchange Terminal (Simulator) 📈
 
----
 [![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://www.python.org/)
 [![License: GPL v3](https://img.shields.io/badge/License-GPL_v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Release](https://img.shields.io/badge/Release-v1.2.0--stable-orange.svg)](https://github.com/agenth1tman/Stock-Exchange-Terminal/releases)
 
 A real-time stock exchange simulator built to power an **interschool fintech competition**. Teams trade shares from their phones or laptops while an admin runs the market (opening and closing trading, moving prices and advancing rounds) and every screen updates live.
 
-> ### 🌐 Nothing to download for players
+> ### 🌐 Nothing to download for clients
 > The server delivers the trading terminal itself. Players **just open the server's address in any browser** (a phone, tablet or laptop) and sign in.
 
 ---
